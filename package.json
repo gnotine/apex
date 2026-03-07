@@ -1,0 +1,9 @@
+{
+  "name": "apex-investment-tool",
+  "version": "1.0.0",
+  "description": "APEX Investment Valuation Engine with live stock data via Finnhub",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}
