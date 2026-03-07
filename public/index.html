@@ -611,6 +611,134 @@
 
   .ticker-field-chip.loaded .chip-label { color: var(--accent-stock); }
 
+  /* Live data banners */
+  .live-banner {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-radius: 12px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .real-banner { border-color: #f7934c30; background: #f7934c08; }
+  .crypto-banner { border-color: #a855f730; background: #a855f708; }
+
+  .live-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent-real);
+    box-shadow: 0 0 6px var(--accent-real);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .live-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+
+  .live-value {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .live-meta {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* Crypto live prices row */
+  .live-crypto-prices {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .live-crypto-price-item {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+  }
+
+  .live-crypto-price-item .coin-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .live-crypto-price-item .coin-price {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .live-crypto-price-item .coin-change.up   { color: var(--positive); font-size: 10px; }
+  .live-crypto-price-item .coin-change.down { color: var(--negative); font-size: 10px; }
+
+  .live-crypto-selector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .coin-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+
+  .coin-btn:hover { color: var(--text); border-color: var(--accent-crypto); }
+  .coin-btn.active { background: var(--accent-crypto); border-color: var(--accent-crypto); color: var(--bg); }
+
+  /* Share button */
+  .share-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .share-btn:hover { color: var(--text); border-color: var(--text); }
+  .share-btn.copied { border-color: var(--accent-stock); color: var(--accent-stock); }
+
   /* Scroll hint for mobile */
   @media (max-width: 720px) {
     .tab-panel.active { grid-template-columns: 1fr; }
@@ -1096,6 +1224,16 @@
 
   <!-- REAL ESTATE -->
   <div id="panel-real" class="tab-panel">
+    <!-- Live rate banner -->
+    <div class="card card-full live-banner real-banner">
+      <div class="live-banner-left">
+        <span class="live-dot"></span>
+        <span class="live-label">LIVE DATA</span>
+        <span id="r-live-rate" class="live-value">Fetching mortgage rate…</span>
+      </div>
+      <div id="r-live-meta" class="live-meta"></div>
+    </div>
+
     <div class="card real">
       <div class="card-title">Property Parameters <span class="badge real">Income Method</span></div>
 
@@ -1190,6 +1328,23 @@
 
   <!-- CRYPTO -->
   <div id="panel-crypto" class="tab-panel">
+    <!-- Live price banner -->
+    <div class="card card-full live-banner crypto-banner">
+      <div class="live-banner-left">
+        <span class="live-dot" style="background:var(--accent-crypto);box-shadow:0 0 6px var(--accent-crypto)"></span>
+        <span class="live-label">LIVE PRICES</span>
+        <div id="c-live-prices" class="live-crypto-prices">Fetching…</div>
+      </div>
+      <div class="live-crypto-selector">
+        <span style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-right:8px">Load:</span>
+        <button class="coin-btn active" data-coin="bitcoin" data-id="c-price">BTC</button>
+        <button class="coin-btn" data-coin="ethereum" data-id="c-price">ETH</button>
+        <button class="coin-btn" data-coin="solana" data-id="c-price">SOL</button>
+        <button class="coin-btn" data-coin="ripple" data-id="c-price">XRP</button>
+        <button class="coin-btn" data-coin="cardano" data-id="c-price">ADA</button>
+      </div>
+    </div>
+
     <div class="card crypto">
       <div class="card-title">Crypto Parameters <span class="badge crypto">Risk / Return</span></div>
 
@@ -1278,7 +1433,12 @@
     <div class="disclaimer">
       For illustrative and educational purposes only. Not financial advice. All models are simplifications — consult a licensed financial advisor before making investment decisions.
     </div>
-    <div>APEX v1.0 · 2025</div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <button id="share-btn" class="share-btn">
+        <span id="share-btn-text">⤴ Share Analysis</span>
+      </button>
+      <span>APEX v1.1 · 2025</span>
+    </div>
   </div>
 </div>
 
@@ -2100,6 +2260,157 @@ async function loadTickerData(symbol) {
 }
 
 
+// ─── LIVE MORTGAGE RATES (FRED — St. Louis Fed, public endpoint) ─
+async function fetchMortgageRate() {
+  try {
+    const url = 'https://api.stlouisfed.org/fred/series/observations?series_id=MORTGAGE30US&sort_order=desc&limit=2&file_type=json&api_key=a2d610cb4b27d7d1cf2b6c2c16c79e54';
+    const res  = await fetch(url);
+    const data = await res.json();
+    const obs  = data.observations;
+    if (!obs || !obs.length) throw new Error('No data');
+
+    const latest = obs[0];
+    const prev   = obs[1];
+    const rate   = parseFloat(latest.value);
+    const prevR  = parseFloat(prev.value);
+    const change = (rate - prevR).toFixed(2);
+    const dir    = change >= 0 ? '▲' : '▼';
+    const color  = change >= 0 ? '#ff8080' : '#00d4aa';
+
+    document.getElementById('r-live-rate').innerHTML =
+      `30-yr Fixed: <strong style="color:var(--accent-real)">${rate.toFixed(2)}%</strong> ` +
+      `<span style="color:${color};font-size:11px">${dir} ${Math.abs(change)}% vs prior week</span>`;
+    document.getElementById('r-live-meta').textContent =
+      `Freddie Mac via FRED · Week of ${latest.date}`;
+
+    // Auto-set mortgage slider to live rate
+    const slider = document.getElementById('r-mort');
+    const clamped = Math.min(Math.max(rate, 2), 15);
+    slider.value = clamped.toFixed(1);
+    document.getElementById('r-mort-val').innerHTML =
+      clamped.toFixed(1) + '<span class="unit">%</span>';
+    calcReal();
+
+  } catch(e) {
+    const el = document.getElementById('r-live-rate');
+    if (el) el.textContent = 'Live rate unavailable — adjust slider manually';
+  }
+}
+
+// ─── LIVE CRYPTO PRICES (CoinGecko — no API key needed) ──────────
+const COINGECKO_COINS = ['bitcoin','ethereum','solana','ripple','cardano'];
+const COIN_SYMBOLS    = { bitcoin:'BTC', ethereum:'ETH', solana:'SOL', ripple:'XRP', cardano:'ADA' };
+let liveCryptoPrices  = {};
+
+async function fetchCryptoPrices() {
+  try {
+    const ids = COINGECKO_COINS.join(',');
+    const res  = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
+    const data = await res.json();
+    liveCryptoPrices = data;
+
+    const html = COINGECKO_COINS.map(coin => {
+      const d = data[coin];
+      if (!d?.usd) return '';
+      const changeClass = d.usd_24h_change >= 0 ? 'up' : 'down';
+      const changeStr   = (d.usd_24h_change >= 0 ? '+' : '') + d.usd_24h_change.toFixed(2) + '%';
+      return `<div class="live-crypto-price-item">
+        <span class="coin-name">${COIN_SYMBOLS[coin]}</span>
+        <span class="coin-price">$${d.usd.toLocaleString('en-US',{maximumFractionDigits:2})}</span>
+        <span class="coin-change ${changeClass}">${changeStr}</span>
+      </div>`;
+    }).join('');
+
+    document.getElementById('c-live-prices').innerHTML = html || 'Prices unavailable';
+    loadCoinPrice('bitcoin'); // default to BTC
+
+  } catch(e) {
+    const el = document.getElementById('c-live-prices');
+    if (el) el.textContent = 'Live prices unavailable';
+  }
+}
+
+function loadCoinPrice(coin) {
+  const price = liveCryptoPrices[coin]?.usd;
+  if (!price) return;
+  const el = document.getElementById('c-price');
+  el.value = price;
+  el.style.transition = 'background 0.3s, border-color 0.3s';
+  el.style.background = '#a855f715';
+  el.style.borderColor = '#a855f760';
+  setTimeout(() => { el.style.background = ''; el.style.borderColor = ''; }, 1400);
+  calcCrypto();
+}
+
+document.querySelectorAll('.coin-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.coin-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadCoinPrice(btn.dataset.coin);
+  });
+});
+
+// ─── SHAREABLE URLS ───────────────────────────────────────────────
+const SHARE_PARAMS = [
+  's-price','s-eps-ttm','s-div','s-bvps','s-fcf','s-shares','s-debt','s-cash',
+  's-ror','s-rf','s-beta','s-hold','s-growth','s-ddm-phase','s-ddm-tg',
+  's-fcfg1','s-fcfg2','s-dcf-phase','s-dcf-tg','s-pe','s-pb','s-pfcf','s-eps-g',
+  's-graham-g','s-aaa','s-graham-mos',
+  'b-face','b-price','b-coupon','b-years','b-disc','b-inf',
+  'r-price','r-rent','r-down','r-mort','r-appr','r-vac','r-exp',
+  'c-price','c-invest','c-ret','c-vol','c-hold','c-stake',
+];
+
+function buildShareURL() {
+  const params = new URLSearchParams();
+  params.set('tab', document.querySelector('.tab-btn.active')?.dataset.tab || 'stock');
+  SHARE_PARAMS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value !== '') params.set(id, el.value);
+  });
+  return `${location.origin}${location.pathname}#${params.toString()}`;
+}
+
+function loadFromURL() {
+  const hash = location.hash.slice(1);
+  if (!hash) return;
+  try {
+    const params = new URLSearchParams(hash);
+    const tab = params.get('tab');
+    if (tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+      if (btn) {
+        btn.classList.add('active');
+        document.getElementById('panel-' + tab)?.classList.add('active');
+        document.body.className = 'tab-' + tab;
+      }
+    }
+    SHARE_PARAMS.forEach(id => {
+      const val = params.get(id);
+      if (val !== null) {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      }
+    });
+    updateAll();
+  } catch(e) { console.warn('Could not restore from URL:', e); }
+}
+
+document.getElementById('share-btn').addEventListener('click', () => {
+  const url = buildShareURL();
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('share-btn');
+    document.getElementById('share-btn-text').textContent = '✓ Link Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      document.getElementById('share-btn-text').textContent = '⤴ Share Analysis';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(() => { prompt('Copy this link:', url); });
+});
+
 function wireInputs(ids, fn) {
   ids.forEach(id => {
     const el = document.getElementById(id);
@@ -2119,8 +2430,12 @@ wireInputs(['c-price','c-invest','c-ret','c-vol','c-hold','c-stake'], calcCrypto
 
 function updateAll() { calcStock(); calcBond(); calcReal(); calcCrypto(); }
 
-// Initial render
+// Load URL params first, then render, then fetch live data
+loadFromURL();
 updateAll();
+fetchMortgageRate();
+fetchCryptoPrices();
+
 </script>
 </body>
 </html>
