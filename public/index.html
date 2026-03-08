@@ -739,6 +739,20 @@
   .share-btn:hover { color: var(--text); border-color: var(--text); }
   .share-btn.copied { border-color: var(--accent-stock); color: var(--accent-stock); }
 
+  .zoom-reset-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .zoom-reset-btn:hover { color: var(--text); border-color: var(--accent-stock); }
+
   /* Scroll hint for mobile */
   @media (max-width: 720px) {
     .tab-panel.active { grid-template-columns: 1fr; }
@@ -1178,7 +1192,13 @@
 
     <!-- Projection chart: full width -->
     <div class="card card-full">
-      <div class="card-title">Multi-Method Price Projection</div>
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Multi-Method Price Projection</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:10px;color:var(--muted);letter-spacing:0.5px">Scroll to zoom · Drag to pan</span>
+          <button onclick="resetZoom('s-proj-chart')" class="zoom-reset-btn">Reset</button>
+        </div>
+      </div>
       <div class="projection-wrap">
         <canvas id="s-proj-chart"></canvas>
       </div>
@@ -1488,6 +1508,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
 <script>
 // ─── TAB SWITCHING ────────────────────────────────────────────
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -1869,13 +1891,25 @@ function calcStock() {
     data: { labels: projYears, datasets: projDatasets },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: true, labels: { boxWidth: 10, padding: 16 }}},
+      plugins: {
+        legend: { display: true, labels: { boxWidth: 10, padding: 16 }},
+        zoom: {
+          pan:  { enabled: true, mode: 'xy' },
+          zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' }
+        }
+      },
       scales: {
         x: { grid: { color: '#ffffff08' }},
         y: { grid: { color: '#ffffff08' }, ticks: { callback: fmt$ }}
       }
     }
   });
+}
+
+// ─── RESET ZOOM HELPER ────────────────────────────────────────
+function resetZoom(canvasId) {
+  const chart = Chart.getChart(document.getElementById(canvasId));
+  if (chart) chart.resetZoom();
 }
 
 // ─── BOND ────────────────────────────────────────────────────
