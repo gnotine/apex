@@ -2503,11 +2503,13 @@ async function loadTickerData(symbol) {
   document.getElementById('ticker-company-info').style.display = 'none';
 
   try {
-    const [quote, profile, financials, metrics] = await Promise.all([
+    const [quote, profile, financials, metrics, cfData, icData] = await Promise.all([
       proxyFetch('/quote',                      { symbol }),
       proxyFetch('/stock/profile2',             { symbol }),
       proxyFetch('/stock/financials-reported',  { symbol, freq: 'annual' }),
       proxyFetch('/stock/metric',               { symbol, metric: 'all' }),
+      proxyFetch('/stock/financials',           { symbol, statement: 'cf', freq: 'ttm' }),
+      proxyFetch('/stock/financials',           { symbol, statement: 'ic', freq: 'ttm' }),
     ]);
 
     if (!profile || !profile.name) throw new Error(`Ticker "${symbol}" not found.`);
@@ -2521,11 +2523,40 @@ async function loadTickerData(symbol) {
       ? (divYield / 100) * price
       : (m['dividendsPerShareAnnual'] ?? 0);
     const bvps   = m['bookValuePerShareAnnual'] ?? m['bookValuePerShareQuarterly'] ?? null;
-    const fcfps  = m['freeCashFlowPerShareTTM'] ?? m['freeCashFlowPerShareAnnual'] ?? null;
     const shares = profile.shareOutstanding ?? null; // already in millions
     const beta   = m['beta'] ?? profile.beta ?? null;
 
-    // Extract debt & cash from reported balance sheet
+    // ── FCF/share from standardized cash flow statement (TTM) ──────────────────
+    // Finnhub /stock/financials cf TTM: data[0].report contains line items
+    let fcfps = null;
+    try {
+      const cfReport = cfData?.data?.[0]?.report || {};
+      // Operating cash flow
+      const cfo = cfReport['operatingCashFlow'] ?? cfReport['netCashProvidedByOperatingActivities'] ?? null;
+      // CapEx (usually negative, so we add it)
+      const capex = cfReport['capitalExpenditures'] ?? cfReport['purchasesOfPropertyPlantAndEquipment'] ?? null;
+      if (cfo !== null && shares) {
+        const fcfTotal = capex !== null ? cfo + capex : cfo; // capex is already negative
+        fcfps = fcfTotal / (shares * 1e6);
+      }
+    } catch(e) { fcfps = null; }
+
+    // ── EBITDA/share from standardized income statement (TTM) ──────────────────
+    let ebitdaPS = null;
+    try {
+      const icReport = icData?.data?.[0]?.report || {};
+      const ebit    = icReport['ebit'] ?? icReport['operatingIncome'] ?? null;
+      const da      = icReport['depreciationAndAmortization'] ?? icReport['depreciationDepletionAndAmortization'] ?? null;
+      if (ebit !== null && da !== null && shares) {
+        ebitdaPS = (ebit + Math.abs(da)) / (shares * 1e6);
+      } else if (ebit !== null && shares) {
+        // Approximate D&A from metric object or 15% of EBIT
+        const daTTM = m['ebitdaTTM'] && m['ebitTTM'] ? (m['ebitdaTTM'] - m['ebitTTM']) : null;
+        ebitdaPS = daTTM ? (ebit + daTTM) / (shares * 1e6) : ebit / (shares * 1e6) / 0.85;
+      }
+    } catch(e) { ebitdaPS = null; }
+
+    // Extract debt & cash from reported balance sheet (financials-reported)
     let totalDebt = null, cashAmt = null;
     const reports = financials?.data;
     if (reports && reports.length > 0) {
@@ -2545,20 +2576,14 @@ async function loadTickerData(symbol) {
       if (rawCash) cashAmt   = rawCash / 1e6;
     }
 
-    // EBITDA/share — Finnhub metric object has these directly (much more reliable than parsing IC)
-    const ebitdaPS = m['ebitdaPerShareTTM'] ?? m['ebitdaPerShare'] ?? null;
-    // D&A per share: approximate from (EBITDA - EBIT) per share, or use roicTTM proxy
-    // Best available: currentRatioQuarterly is not it — use ebitda - eps as rough proxy
-    // Actually derive: D&A ≈ EBITDA/share - (operating income/share)
-    // Fallback: set D&A to ~15% of EBITDA if not available
-    const ebitdaRaw  = m['ebitdaTTM'] ?? null;
-    const ebitRaw    = m['ebitTTM']   ?? null;
-    const sharesForDA = shares ? shares * 1e6 : null;
+    // D&A per share from metric fallback
+    const ebitdaRaw = m['ebitdaTTM'] ?? null;
+    const ebitRaw   = m['ebitTTM']   ?? null;
     let daPS = null;
-    if (ebitdaRaw && ebitRaw && sharesForDA) {
-      daPS = (ebitdaRaw - ebitRaw) / sharesForDA;
+    if (ebitdaRaw && ebitRaw && shares) {
+      daPS = (ebitdaRaw - ebitRaw) / (shares * 1e6);
     } else if (ebitdaPS) {
-      daPS = ebitdaPS * 0.15; // reasonable approximation
+      daPS = ebitdaPS * 0.15;
     }
 
     // Populate model inputs

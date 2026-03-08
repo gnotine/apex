@@ -23,6 +23,7 @@ const ALLOWED_PATHS = [
   '/stock/profile2',
   '/stock/metric',
   '/stock/financials-reported',
+  '/stock/financials',
 ];
 
 export default async function handler(req, res) {
