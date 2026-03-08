@@ -1274,16 +1274,6 @@
 
   <!-- REAL ESTATE -->
   <div id="panel-real" class="tab-panel">
-    <!-- Live rate banner -->
-    <div class="card card-full live-banner real-banner">
-      <div class="live-banner-left">
-        <span class="live-dot"></span>
-        <span class="live-label">LIVE DATA</span>
-        <span id="r-live-rate" class="live-value">Fetching mortgage rate…</span>
-      </div>
-      <div id="r-live-meta" class="live-meta"></div>
-    </div>
-
     <div class="card real">
       <div class="card-title">Property Parameters <span class="badge real">Income Method</span></div>
 
@@ -2407,38 +2397,6 @@ async function loadTickerData(symbol) {
 }
 
 
-// ─── LIVE MORTGAGE RATES (via /api/mortgage serverless proxy) ────
-async function fetchMortgageRate() {
-  try {
-    const res  = await fetch('/api/mortgage');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-
-    const rate   = data.rate;
-    const change = data.weekly_change;
-    const dir    = change >= 0 ? '▲' : '▼';
-    const color  = change >= 0 ? '#ff8080' : '#00d4aa';
-
-    document.getElementById('r-live-rate').innerHTML =
-      `30-yr Fixed: <strong style="color:var(--accent-real)">${rate.toFixed(2)}%</strong> ` +
-      `<span style="color:${color};font-size:11px">${dir} ${Math.abs(change).toFixed(2)}% vs prior week</span>`;
-    document.getElementById('r-live-meta').textContent =
-      `${data.source} · Week of ${data.date}`;
-
-    const slider  = document.getElementById('r-mort');
-    const clamped = Math.min(Math.max(rate, 2), 15);
-    slider.value  = clamped.toFixed(1);
-    document.getElementById('r-mort-val').innerHTML =
-      clamped.toFixed(1) + '<span class="unit">%</span>';
-    calcReal();
-
-  } catch(e) {
-    const el = document.getElementById('r-live-rate');
-    if (el) el.textContent = 'Live rate unavailable — adjust slider manually';
-  }
-}
-
 // ─── LIVE CRYPTO PRICES (CoinGecko — no API key needed) ──────────
 const COINGECKO_COINS = ['bitcoin','ethereum','solana','ripple','cardano'];
 const COIN_SYMBOLS    = { bitcoin:'BTC', ethereum:'ETH', solana:'SOL', ripple:'XRP', cardano:'ADA' };
@@ -2751,7 +2709,6 @@ document.getElementById('pdf-btn').addEventListener('click', async () => {
 // Load URL params first, then render, then fetch live data
 loadFromURL();
 updateAll();
-fetchMortgageRate();
 fetchCryptoPrices();
 
 </script>
