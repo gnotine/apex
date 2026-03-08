@@ -1118,7 +1118,6 @@
           </div>
         </div>
       </div>
-    </div>
 
       <!-- EV/EBITDA -->
       <div id="method-evebitda" class="method-panel">
@@ -1218,6 +1217,7 @@
           </div>
         </div>
       </div>
+    </div>
 
     <!-- Valuation Comparison: full width -->
     <div class="card card-full">
@@ -2465,27 +2465,27 @@ async function loadTickerData(symbol) {
 }
 
 
-// ─── LIVE MORTGAGE RATES (homebuyer.com — public, no key) ────────
+// ─── LIVE MORTGAGE RATES (via /api/mortgage serverless proxy) ────
 async function fetchMortgageRate() {
   try {
-    const res  = await fetch('https://api.homebuyer.com/v1/rates');
+    const res  = await fetch('/api/mortgage');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    if (data.error) throw new Error(data.error);
 
-    const rate   = data.freddie_mac_rate || data.national_average_rate || data.rate_30yr;
-    if (!rate) throw new Error('No rate');
-    const change = data.rate_change_weekly;
+    const rate   = data.rate;
+    const change = data.weekly_change;
     const dir    = change >= 0 ? '▲' : '▼';
     const color  = change >= 0 ? '#ff8080' : '#00d4aa';
-    const updated = data.freddie_mac_last_updated || data.last_updated || '';
 
     document.getElementById('r-live-rate').innerHTML =
-      `30-yr Fixed: <strong style="color:var(--accent-real)">${parseFloat(rate).toFixed(2)}%</strong> ` +
-      `<span style="color:${color};font-size:11px">${dir} ${Math.abs(change).toFixed(3)}% this week</span>`;
+      `30-yr Fixed: <strong style="color:var(--accent-real)">${rate.toFixed(2)}%</strong> ` +
+      `<span style="color:${color};font-size:11px">${dir} ${Math.abs(change).toFixed(2)}% vs prior week</span>`;
     document.getElementById('r-live-meta').textContent =
-      `Freddie Mac · Updated ${updated}`;
+      `${data.source} · Week of ${data.date}`;
 
     const slider  = document.getElementById('r-mort');
-    const clamped = Math.min(Math.max(parseFloat(rate), 2), 15);
+    const clamped = Math.min(Math.max(rate, 2), 15);
     slider.value  = clamped.toFixed(1);
     document.getElementById('r-mort-val').innerHTML =
       clamped.toFixed(1) + '<span class="unit">%</span>';
