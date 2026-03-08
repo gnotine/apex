@@ -141,6 +141,7 @@
   .tab-btn[data-tab="bond"].active { background: var(--accent-bond); }
   .tab-btn[data-tab="real"].active { background: var(--accent-real); }
   .tab-btn[data-tab="crypto"].active { background: var(--accent-crypto); }
+  .tab-btn[data-tab="watchlist"].active { background: var(--accent-stock); }
 
   /* Panel */
   .tab-panel { display: none; animation: fadeIn 0.3s ease; }
@@ -775,6 +776,151 @@
     max-width: 500px;
     line-height: 1.6;
   }
+  /* ── Watchlist ─────────────────────────────────────────────── */
+  .watchlist-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-stock);
+    color: var(--bg);
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 1px 6px;
+    margin-left: 5px;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .watchlist-add-btn {
+    background: var(--accent-stock);
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bg);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .watchlist-add-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .watchlist-add-btn.saved { background: var(--surface2); color: var(--accent-stock); border: 1px solid var(--accent-stock)60; }
+
+  .watchlist-header-card { padding: 20px 24px; }
+
+  .watchlist-clear-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .watchlist-clear-btn:hover { color: var(--negative); border-color: var(--negative); }
+
+  .watchlist-empty {
+    text-align: center;
+    padding: 80px 20px;
+    grid-column: 1 / -1;
+  }
+  .watchlist-empty-icon { font-size: 48px; opacity: 0.15; margin-bottom: 16px; }
+  .watchlist-empty-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--muted); margin-bottom: 8px; }
+  .watchlist-empty-sub { font-size: 12px; color: var(--muted); max-width: 360px; margin: 0 auto; line-height: 1.6; }
+
+  .watchlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .watchlist-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .watchlist-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-stock);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .watchlist-card:hover { border-color: var(--accent-stock)60; transform: translateY(-2px); box-shadow: 0 8px 24px #00000040; }
+  .watchlist-card:hover::before { opacity: 1; }
+
+  .wl-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .wl-ticker { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); }
+  .wl-company { font-size: 10px; color: var(--muted); margin-top: 2px; letter-spacing: 0.3px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .wl-date { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; text-align: right; }
+
+  .wl-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .wl-price { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); }
+  .wl-upside { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 6px; }
+  .wl-upside.up   { background: var(--positive)15; color: var(--positive); }
+  .wl-upside.down { background: var(--negative)15; color: var(--negative); }
+
+  .wl-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .wl-metric { background: var(--surface2); border-radius: 8px; padding: 8px 10px; }
+  .wl-metric-label { font-size: 8px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+  .wl-metric-value { font-size: 13px; color: var(--text); font-weight: 500; }
+  .wl-metric-value.pos { color: var(--positive); }
+  .wl-metric-value.neg { color: var(--negative); }
+
+  .wl-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .wl-load-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-stock);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  .wl-delete-btn {
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.15s;
+    border: none;
+    background: none;
+  }
+  .wl-delete-btn:hover { color: var(--negative); background: var(--negative)10; }
+
 </style>
 </head>
 <body class="tab-stock">
@@ -789,6 +935,10 @@
     <button class="tab-btn" data-tab="bond">Bonds</button>
     <button class="tab-btn" data-tab="real">Real Estate</button>
     <button class="tab-btn" data-tab="crypto">Crypto</button>
+    <button class="tab-btn" data-tab="watchlist">
+      ★ Watchlist
+      <span id="watchlist-count-badge" class="watchlist-count-badge" style="display:none">0</span>
+    </button>
   </div>
 
   <!-- STOCKS -->
@@ -834,6 +984,7 @@
         <div class="ticker-field-chip" id="chip-debt"></div>
         <div class="ticker-field-chip" id="chip-cash"></div>
         <div class="ticker-field-chip" id="chip-ebitda"></div>
+        <button id="add-watchlist-btn" class="watchlist-add-btn" onclick="addToWatchlist()">★ Add to Watchlist</button>
       </div>
     </div>
 
@@ -1489,6 +1640,27 @@
     </div>
   </div>
 
+  <!-- WATCHLIST -->
+  <div id="panel-watchlist" class="tab-panel">
+    <div class="card card-full watchlist-header-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="card-title" style="margin-bottom:4px">★ My Watchlist <span class="badge" style="background:var(--accent-stock)20;color:var(--accent-stock);border-color:var(--accent-stock)40" id="watchlist-header-count"></span></div>
+          <div style="font-size:11px;color:var(--muted)">Saved stocks with your custom valuation assumptions. Click any card to reload.</div>
+        </div>
+        <button onclick="clearWatchlist()" class="watchlist-clear-btn" id="watchlist-clear-btn" style="display:none">✕ Clear All</button>
+      </div>
+    </div>
+
+    <div id="watchlist-empty" class="watchlist-empty" style="display:none">
+      <div class="watchlist-empty-icon">★</div>
+      <div class="watchlist-empty-title">Your watchlist is empty</div>
+      <div class="watchlist-empty-sub">Load a stock in the Stocks tab and click "Add to Watchlist" to save it here with all your assumptions.</div>
+    </div>
+
+    <div id="watchlist-grid" class="watchlist-grid"></div>
+  </div>
+
   <div class="footer">
     <div class="disclaimer">
       For illustrative and educational purposes only. Not financial advice. All models are simplifications — consult a licensed financial advisor before making investment decisions.
@@ -1523,8 +1695,11 @@ tabBtns.forEach(btn => {
     btn.classList.add('active');
     document.getElementById('panel-' + tab).classList.add('active');
     document.body.className = 'tab-' + tab;
-    // Update accent color on range thumbs via CSS var trick
-    setTimeout(() => { updateAll(); }, 50);
+    if (tab === 'watchlist') {
+      renderWatchlist();
+    } else {
+      setTimeout(() => { updateAll(); }, 50);
+    }
   });
 });
 
@@ -2544,6 +2719,201 @@ document.getElementById('share-btn').addEventListener('click', () => {
     }, 2500);
   }).catch(() => { prompt('Copy this link:', url); });
 });
+
+// ─── WATCHLIST ────────────────────────────────────────────────────
+const WL_KEY = 'apex_watchlist_v1';
+
+// All stock input IDs to save with each watchlist entry
+const STOCK_INPUT_IDS = [
+  's-price','s-eps-ttm','s-div','s-bvps','s-fcf','s-shares','s-debt','s-cash',
+  's-ror','s-rf','s-beta','s-hold',
+  's-growth','s-ddm-phase','s-ddm-tg',
+  's-fcfg1','s-fcfg2','s-dcf-phase','s-dcf-tg',
+  's-pe','s-pb','s-pfcf','s-eps-g',
+  's-graham-g','s-aaa','s-graham-mos',
+  's-rdcf-wacc','s-rdcf-phase','s-rdcf-tg',
+];
+
+function loadWatchlist() {
+  try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function saveWatchlist(list) {
+  localStorage.setItem(WL_KEY, JSON.stringify(list));
+  updateWatchlistBadge();
+}
+
+function updateWatchlistBadge() {
+  const list = loadWatchlist();
+  const badge = document.getElementById('watchlist-count-badge');
+  if (list.length > 0) {
+    badge.textContent = list.length;
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function addToWatchlist() {
+  const ticker  = (document.getElementById('ticker-input')?.value || '').toUpperCase().trim();
+  const company = document.getElementById('ticker-company-name')?.textContent || ticker;
+  if (!ticker) return;
+
+  // Capture all current input values
+  const assumptions = {};
+  STOCK_INPUT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) assumptions[id] = el.value;
+  });
+
+  // Capture key computed metrics for the card display
+  const getMetricText = id => document.getElementById(id)?.textContent || '—';
+  const snapshot = {
+    price:    assumptions['s-price'],
+    dcfVal:   getMetricText('s-dcf-val'),
+    dcfMos:   getMetricText('s-dcf-mos'),
+    ddmVal:   getMetricText('s-ddm-val'),
+    pe:       document.getElementById('s-price').value && document.getElementById('s-eps-ttm').value
+              ? (parseFloat(document.getElementById('s-price').value) / parseFloat(document.getElementById('s-eps-ttm').value)).toFixed(1)
+              : '—',
+  };
+
+  const list = loadWatchlist();
+  // Update if already exists, otherwise add
+  const existingIdx = list.findIndex(e => e.ticker === ticker);
+  const entry = { ticker, company, assumptions, snapshot, savedAt: new Date().toISOString() };
+  if (existingIdx >= 0) {
+    list[existingIdx] = entry;
+  } else {
+    list.unshift(entry); // newest first
+  }
+  saveWatchlist(list);
+
+  // Button feedback
+  const btn = document.getElementById('add-watchlist-btn');
+  btn.textContent = '✓ Saved!';
+  btn.classList.add('saved');
+  setTimeout(() => {
+    btn.textContent = '★ Add to Watchlist';
+    btn.classList.remove('saved');
+  }, 2000);
+
+  renderWatchlist();
+}
+
+function removeFromWatchlist(ticker, e) {
+  e.stopPropagation(); // don't trigger card click
+  const list = loadWatchlist().filter(e => e.ticker !== ticker);
+  saveWatchlist(list);
+  renderWatchlist();
+}
+
+function clearWatchlist() {
+  if (!confirm('Clear entire watchlist?')) return;
+  saveWatchlist([]);
+  renderWatchlist();
+}
+
+function loadFromWatchlist(ticker) {
+  const entry = loadWatchlist().find(e => e.ticker === ticker);
+  if (!entry) return;
+
+  // Restore all inputs
+  STOCK_INPUT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && entry.assumptions[id] !== undefined) el.value = entry.assumptions[id];
+  });
+
+  // Set ticker input and company name
+  document.getElementById('ticker-input').value = entry.ticker;
+  if (entry.company) {
+    document.getElementById('ticker-company-name').textContent = entry.company;
+    document.getElementById('ticker-company-info').style.display = 'block';
+  }
+  document.getElementById('ticker-fields-preview').style.display = 'flex';
+  document.getElementById('add-watchlist-btn').textContent = '★ Add to Watchlist';
+
+  // Recalculate
+  calcStock();
+
+  // Switch to stock tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab-btn[data-tab="stock"]').classList.add('active');
+  document.getElementById('panel-stock').classList.add('active');
+  document.body.className = 'tab-stock';
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderWatchlist() {
+  const list = loadWatchlist();
+  const grid  = document.getElementById('watchlist-grid');
+  const empty = document.getElementById('watchlist-empty');
+  const clearBtn = document.getElementById('watchlist-clear-btn');
+  const headerCount = document.getElementById('watchlist-header-count');
+
+  headerCount.textContent = list.length + ' stock' + (list.length !== 1 ? 's' : '');
+  clearBtn.style.display = list.length > 0 ? 'block' : 'none';
+
+  if (list.length === 0) {
+    empty.style.display = 'block';
+    grid.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = list.map(entry => {
+    const { ticker, company, snapshot, savedAt } = entry;
+    const price = parseFloat(snapshot.price) || 0;
+    const dcfVal = parseFloat((snapshot.dcfVal || '').replace(/[$,]/g,''));
+    const upside = dcfVal && price ? ((dcfVal - price) / price * 100) : null;
+    const upsideClass = upside === null ? '' : upside >= 0 ? 'up' : 'down';
+    const upsideStr = upside !== null ? (upside >= 0 ? '+' : '') + upside.toFixed(1) + '%' : '—';
+    const date = new Date(savedAt).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+
+    return `
+    <div class="watchlist-card" onclick="loadFromWatchlist('${ticker}')">
+      <div class="wl-card-header">
+        <div>
+          <div class="wl-ticker">${ticker}</div>
+          <div class="wl-company">${company}</div>
+        </div>
+        <div class="wl-date">Saved ${date}</div>
+      </div>
+      <div class="wl-price-row">
+        <div class="wl-price">$${parseFloat(price).toFixed(2)}</div>
+        ${upside !== null ? `<div class="wl-upside ${upsideClass}">${upsideStr} DCF</div>` : ''}
+      </div>
+      <div class="wl-metrics">
+        <div class="wl-metric">
+          <div class="wl-metric-label">DCF Value</div>
+          <div class="wl-metric-value ${dcfVal > price ? 'pos' : 'neg'}">${snapshot.dcfVal || '—'}</div>
+        </div>
+        <div class="wl-metric">
+          <div class="wl-metric-label">DDM Value</div>
+          <div class="wl-metric-value">${snapshot.ddmVal || '—'}</div>
+        </div>
+        <div class="wl-metric">
+          <div class="wl-metric-label">P/E Ratio</div>
+          <div class="wl-metric-value">${snapshot.pe || '—'}x</div>
+        </div>
+      </div>
+      <div class="wl-card-footer">
+        <span class="wl-load-btn">↩ LOAD ANALYSIS</span>
+        <button class="wl-delete-btn" onclick="removeFromWatchlist('${ticker}', event)">✕ Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateWatchlistBadge();
+}
+
+// Init watchlist on load
+renderWatchlist();
+updateWatchlistBadge();
 
 function wireInputs(ids, fn) {
   ids.forEach(id => {
