@@ -819,6 +819,7 @@
         <div class="ticker-field-chip" id="chip-shares"></div>
         <div class="ticker-field-chip" id="chip-debt"></div>
         <div class="ticker-field-chip" id="chip-cash"></div>
+        <div class="ticker-field-chip" id="chip-ebitda"></div>
       </div>
     </div>
 
@@ -1862,11 +1863,16 @@ function calcStock() {
     else if (rdcfImpliedG > 0.02) { verdict = 'Conservative';   verdictGood = true;  }
     else                           { verdict = 'Distressed';     verdictGood = null;  }
 
-    // Bear / Bull scenarios
-    const bearG   = rdcfImpliedG * 0.5;
-    const bullG   = rdcfImpliedG * 1.5;
-    const bearVal = Math.max(dcfAtGrowth(bearG) + (cash / shares) - (debt / shares), 0);
-    const bullVal = Math.max(dcfAtGrowth(bullG) + (cash / shares) - (debt / shares), 0);
+    // Bear = growth disappoints (implied g × 0.5), Bull = growth exceeds (implied g × 1.5)
+    // When implied g is positive: bear < bull (lower growth → lower value)
+    // When implied g is negative: bear > bull (more negative growth → even lower value)
+    // So always compute both and label by value, not by multiplier
+    const gScenarioA = rdcfImpliedG * 0.5;
+    const gScenarioB = rdcfImpliedG * 1.5;
+    const valA = Math.max(dcfAtGrowth(gScenarioA) + (cash / shares) - (debt / shares), 0);
+    const valB = Math.max(dcfAtGrowth(gScenarioB) + (cash / shares) - (debt / shares), 0);
+    const bearVal = Math.min(valA, valB);
+    const bullVal = Math.max(valA, valB);
 
     setMetric('s-rdcf-g',       (rdcfImpliedG * 100).toFixed(1) + '%/yr', null);
     setMetric('s-rdcf-verdict', verdict, verdictGood);
@@ -2404,10 +2410,11 @@ async function loadTickerData(symbol) {
     const beta   = m['beta'] ?? profile.beta ?? null;
 
     // Extract debt & cash from reported balance sheet
-    let totalDebt = null, cashAmt = null;
+    let totalDebt = null, cashAmt = null, ebitdaPS = null, daPS = null;
     const reports = financials?.data;
     if (reports && reports.length > 0) {
       const bs = reports[0]?.report?.bs || [];
+      const ic = reports[0]?.report?.ic || [];
       const findConcept = (arr, ...labels) => {
         for (const label of labels) {
           const found = arr.find(x =>
@@ -2421,6 +2428,16 @@ async function loadTickerData(symbol) {
       const rawCash = findConcept(bs, 'CashAndCashEquivalentsAtCarryingValue', 'CashCashEquivalents');
       if (rawDebt) totalDebt = rawDebt / 1e6;
       if (rawCash) cashAmt   = rawCash / 1e6;
+
+      // EBITDA = Operating Income + D&A
+      const rawOpIncome = findConcept(ic, 'OperatingIncomeLoss', 'IncomeLossFromContinuingOperationsBeforeIncomeTaxes');
+      const rawDA       = findConcept(ic, 'DepreciationDepletionAndAmortization', 'DepreciationAndAmortization', 'Depreciation');
+      const sharesRaw   = profile.shareOutstanding ? profile.shareOutstanding * 1e6 : null;
+      if (rawOpIncome && rawDA && sharesRaw) {
+        const ebitda = rawOpIncome + rawDA;
+        ebitdaPS = ebitda / sharesRaw;
+        daPS     = rawDA  / sharesRaw;
+      }
     }
 
     // Populate model inputs
@@ -2430,9 +2447,11 @@ async function loadTickerData(symbol) {
     setInput('s-bvps',    bvps);
     setInput('s-fcf',     fcfps);
     setInput('s-shares',  shares);
-    if (totalDebt !== null) setInput('s-debt', totalDebt);
-    if (cashAmt   !== null) setInput('s-cash', cashAmt);
-    if (beta      !== null) setInput('s-beta', beta);
+    if (totalDebt !== null) setInput('s-debt',   totalDebt);
+    if (cashAmt   !== null) setInput('s-cash',   cashAmt);
+    if (beta      !== null) setInput('s-beta',   beta);
+    if (ebitdaPS  !== null) setInput('s-ebitda', ebitdaPS.toFixed(2));
+    if (daPS      !== null) setInput('s-da',     daPS.toFixed(2));
 
     // Chips
     setChip('chip-price',  'Price',      price    ? '$' + price.toFixed(2)                  : null);
@@ -2444,6 +2463,7 @@ async function loadTickerData(symbol) {
     setChip('chip-shares', 'Shares (M)',  shares   ? parseFloat(shares).toFixed(1) + 'M'      : null);
     setChip('chip-debt',   'Debt ($M)',   totalDebt ? '$' + totalDebt.toFixed(0) + 'M'        : null);
     setChip('chip-cash',   'Cash ($M)',   cashAmt   ? '$' + cashAmt.toFixed(0) + 'M'          : null);
+    setChip('chip-ebitda', 'EBITDA/Shr', ebitdaPS  ? '$' + ebitdaPS.toFixed(2)               : null);
 
     // Company header
     document.getElementById('ticker-company-name').textContent = profile.name;
