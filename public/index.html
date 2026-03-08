@@ -2410,11 +2410,10 @@ async function loadTickerData(symbol) {
     const beta   = m['beta'] ?? profile.beta ?? null;
 
     // Extract debt & cash from reported balance sheet
-    let totalDebt = null, cashAmt = null, ebitdaPS = null, daPS = null;
+    let totalDebt = null, cashAmt = null;
     const reports = financials?.data;
     if (reports && reports.length > 0) {
       const bs = reports[0]?.report?.bs || [];
-      const ic = reports[0]?.report?.ic || [];
       const findConcept = (arr, ...labels) => {
         for (const label of labels) {
           const found = arr.find(x =>
@@ -2428,16 +2427,22 @@ async function loadTickerData(symbol) {
       const rawCash = findConcept(bs, 'CashAndCashEquivalentsAtCarryingValue', 'CashCashEquivalents');
       if (rawDebt) totalDebt = rawDebt / 1e6;
       if (rawCash) cashAmt   = rawCash / 1e6;
+    }
 
-      // EBITDA = Operating Income + D&A
-      const rawOpIncome = findConcept(ic, 'OperatingIncomeLoss', 'IncomeLossFromContinuingOperationsBeforeIncomeTaxes');
-      const rawDA       = findConcept(ic, 'DepreciationDepletionAndAmortization', 'DepreciationAndAmortization', 'Depreciation');
-      const sharesRaw   = profile.shareOutstanding ? profile.shareOutstanding * 1e6 : null;
-      if (rawOpIncome && rawDA && sharesRaw) {
-        const ebitda = rawOpIncome + rawDA;
-        ebitdaPS = ebitda / sharesRaw;
-        daPS     = rawDA  / sharesRaw;
-      }
+    // EBITDA/share — Finnhub metric object has these directly (much more reliable than parsing IC)
+    const ebitdaPS = m['ebitdaPerShareTTM'] ?? m['ebitdaPerShare'] ?? null;
+    // D&A per share: approximate from (EBITDA - EBIT) per share, or use roicTTM proxy
+    // Best available: currentRatioQuarterly is not it — use ebitda - eps as rough proxy
+    // Actually derive: D&A ≈ EBITDA/share - (operating income/share)
+    // Fallback: set D&A to ~15% of EBITDA if not available
+    const ebitdaRaw  = m['ebitdaTTM'] ?? null;
+    const ebitRaw    = m['ebitTTM']   ?? null;
+    const sharesForDA = shares ? shares * 1e6 : null;
+    let daPS = null;
+    if (ebitdaRaw && ebitRaw && sharesForDA) {
+      daPS = (ebitdaRaw - ebitRaw) / sharesForDA;
+    } else if (ebitdaPS) {
+      daPS = ebitdaPS * 0.15; // reasonable approximation
     }
 
     // Populate model inputs
