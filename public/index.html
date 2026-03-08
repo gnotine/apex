@@ -910,7 +910,6 @@
         <button class="method-btn" data-method="dcf">DCF</button>
         <button class="method-btn" data-method="multiples">Multiples</button>
         <button class="method-btn" data-method="graham">Graham</button>
-        <button class="method-btn" data-method="evebitda">EV/EBITDA</button>
         <button class="method-btn" data-method="rdcf">Reverse DCF</button>
       </div>
 
@@ -1116,57 +1115,6 @@
             <div class="metric-label">Net-Net Value</div>
             <div class="metric-value" id="s-netnet">—</div>
             <div class="metric-sub">NCAV / Share</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- EV/EBITDA -->
-      <div id="method-evebitda" class="method-panel">
-        <p class="method-desc">Enterprise Value / EBITDA — values the firm using an industry multiple, then backs out debt and cash to arrive at equity value per share.</p>
-        <div class="input-row" style="margin-bottom:12px">
-          <div class="input-group">
-            <label>EBITDA / Share ($)</label>
-            <input type="number" id="s-ebitda" value="18.00" min="0" step="0.1">
-          </div>
-          <div class="input-group">
-            <label>D&amp;A / Share ($)</label>
-            <input type="number" id="s-da" value="3.00" min="0" step="0.1">
-          </div>
-        </div>
-        <div class="slider-group">
-          <div class="slider-label">
-            <span class="slider-name">Target EV/EBITDA Multiple</span>
-            <span class="slider-value" id="s-ev-mult-val">12.0<span class="unit">x</span></span>
-          </div>
-          <input type="range" id="s-ev-mult" min="3" max="40" step="0.5" value="12">
-        </div>
-        <div class="slider-group">
-          <div class="slider-label">
-            <span class="slider-name">EBITDA Growth Rate (5yr)</span>
-            <span class="slider-value" id="s-ebitda-g-val">8.0<span class="unit">%</span></span>
-          </div>
-          <input type="range" id="s-ebitda-g" min="-10" max="40" step="0.5" value="8">
-        </div>
-        <div class="metrics" style="margin-top:16px">
-          <div class="metric">
-            <div class="metric-label">Intrinsic Value</div>
-            <div class="metric-value" id="s-ev-intrinsic">—</div>
-            <div class="metric-sub">Equity / Share</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Upside / Downside</div>
-            <div class="metric-value" id="s-ev-upside">—</div>
-            <div class="metric-sub">vs Market Price</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Current EV/EBITDA</div>
-            <div class="metric-value" id="s-ev-current">—</div>
-            <div class="metric-sub">Implied by price</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">EV (Total Firm)</div>
-            <div class="metric-value" id="s-ev-total">—</div>
-            <div class="metric-sub">Mkt Cap + Debt − Cash</div>
           </div>
         </div>
       </div>
@@ -1790,34 +1738,6 @@ function calcStock() {
     setMetric('s-netnet',      '$' + ncav.toFixed(2),                                 ncav > price);
   }
 
-  // ══ EV/EBITDA ════════════════════════════════════════════════
-  let evEbitdaValue = null;
-  {
-    const ebitdaPS  = +document.getElementById('s-ebitda').value  || 18;
-    const daPS      = +document.getElementById('s-da').value      || 3;
-    const evMult    = +document.getElementById('s-ev-mult').value || 12;
-    const ebitdaG   = +document.getElementById('s-ebitda-g').value / 100;
-
-    sv('s-ev-mult-val',   evMult.toFixed(1),    'x');
-    sv('s-ebitda-g-val',  (ebitdaG*100).toFixed(1), '%');
-
-    // Project EBITDA 5 years forward, then apply multiple
-    const fwdEbitdaPS = ebitdaPS * Math.pow(1 + ebitdaG, 5);
-    const firmValuePS = fwdEbitdaPS * evMult;           // EV per share at exit
-    const equityPS    = firmValuePS - (debt / shares) + (cash / shares);
-    const pvEquity    = equityPS / Math.pow(1 + r, 5);  // discount back 5 years
-    evEbitdaValue     = Math.max(pvEquity, 0);
-
-    const currentEV   = (price * shares + debt - cash) * 1e6;  // total EV in $
-    const currentMult = ebitdaPS > 0 ? (currentEV / (ebitdaPS * shares * 1e6)).toFixed(1) : 'N/A';
-    const evUpside    = ((evEbitdaValue - price) / price * 100);
-
-    setMetric('s-ev-intrinsic', '$' + evEbitdaValue.toFixed(2), evEbitdaValue > price);
-    setMetric('s-ev-upside',    (evUpside >= 0 ? '+' : '') + evUpside.toFixed(1) + '%', evUpside > 0);
-    setMetric('s-ev-current',   currentMult + 'x', null);
-    setMetric('s-ev-total',     fmt$((price * shares + debt - cash) * 1e6), null);
-  }
-
   // ══ Reverse DCF ══════════════════════════════════════════════
   let rdcfImpliedG = null;
   {
@@ -1881,21 +1801,18 @@ function calcStock() {
   }
 
   // ══ Valuation Comparison Bar Chart ═══════════════════════════
-  const allMethods = ['Market', 'DDM', 'DCF', 'P/E', 'P/B', 'P/FCF', 'Graham', 'Graham №', 'EV/EBITDA', 'Rev. DCF'];
-  const allValues  = [price, ddmValue, dcfValue, peImplied, pbImplied, pfcfImplied, grahamFormValue, grahamNum, evEbitdaValue, rdcfImpliedG !== null ? Math.max(dcfValue || price, 0) : null];
-
-  // For Reverse DCF bar, show the bear/mid/bull range — use bull as the bar value
-  const rdcfBullForChart = rdcfImpliedG !== null ? (() => {
-    const bullG2 = rdcfImpliedG * 1.5;
-    let pv2 = 0, fcf2 = fcfps * (1 + bullG2);
+  const allMethods = ['Market', 'DDM', 'DCF', 'P/E', 'P/B', 'P/FCF', 'Graham', 'Graham №', 'Rev. DCF (Bull)'];
+  const rdcfBull = rdcfImpliedG !== null ? (() => {
+    const bullG = Math.max(rdcfImpliedG, 0) * 1.5 + Math.min(rdcfImpliedG, 0) * 0.5;
+    let pv = 0, fcf = fcfps * (1 + bullG);
     const rWacc = +document.getElementById('s-rdcf-wacc').value / 100;
     const rPhase = +document.getElementById('s-rdcf-phase').value;
     const rTg = +document.getElementById('s-rdcf-tg').value / 100;
-    for (let t = 1; t <= rPhase; t++) { pv2 += fcf2 / Math.pow(1 + rWacc, t); fcf2 *= (1 + bullG2); }
-    if (rWacc > rTg) pv2 += fcf2 * (1 + rTg) / (rWacc - rTg) / Math.pow(1 + rWacc, rPhase);
-    return Math.max(pv2 + (cash / shares) - (debt / shares), 0);
+    for (let t = 1; t <= rPhase; t++) { pv += fcf / Math.pow(1 + rWacc, t); fcf *= (1 + bullG); }
+    if (rWacc > rTg) pv += fcf * (1 + rTg) / (rWacc - rTg) / Math.pow(1 + rWacc, rPhase);
+    return Math.max(pv + (cash / shares) - (debt / shares), 0);
   })() : null;
-  allValues[9] = rdcfBullForChart;
+  const allValues = [price, ddmValue, dcfValue, peImplied, pbImplied, pfcfImplied, grahamFormValue, grahamNum, rdcfBull];
 
   const barColors  = allValues.map((v, i) => {
     if (i === 0) return '#ffffff30';
@@ -2655,7 +2572,6 @@ wireInputs(['s-price','s-eps-ttm','s-div','s-bvps','s-fcf','s-shares','s-debt','
             's-fcfg1','s-fcfg2','s-dcf-phase','s-dcf-tg',
             's-pe','s-pb','s-pfcf','s-eps-g',
             's-graham-g','s-aaa','s-graham-mos',
-            's-ebitda','s-da','s-ev-mult','s-ebitda-g',
             's-rdcf-wacc','s-rdcf-phase','s-rdcf-tg'], calcStock);
 wireInputs(['b-face','b-price','b-coupon','b-years','b-disc','b-inf'], calcBond);
 wireInputs(['r-price','r-rent','r-down','r-mort','r-appr','r-vac','r-exp'], calcReal);
@@ -2782,12 +2698,6 @@ document.getElementById('pdf-btn').addEventListener('click', async () => {
       ['Graham Formula',  ...upDown('s-graham-form')],
       ['Buy Below (MoS)', ...upDown('s-graham-buy')],
       ['Net-Net Value',   getVal('s-netnet'), '#e8e8f0'],
-    ]);
-    metricRow([
-      ['EV/EBITDA Value',  ...upDown('s-ev-intrinsic')],
-      ['EV/EBITDA Upside', ...upDown('s-ev-upside')],
-      ['Curr. EV/EBITDA',  getVal('s-ev-current'), '#e8e8f0'],
-      ['Reverse DCF g',    getVal('s-rdcf-g'), '#e8e8f0'],
     ]);
     metricRow([
       ['Mkt Expectation',  getVal('s-rdcf-verdict'), '#e8e8f0'],

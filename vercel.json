@@ -6,6 +6,10 @@
       "dest": "/api/finnhub.js"
     },
     {
+      "src": "/api/mortgage",
+      "dest": "/api/mortgage.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1"
     }
