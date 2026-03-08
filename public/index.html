@@ -909,6 +909,8 @@
         <button class="method-btn" data-method="dcf">DCF</button>
         <button class="method-btn" data-method="multiples">Multiples</button>
         <button class="method-btn" data-method="graham">Graham</button>
+        <button class="method-btn" data-method="evebitda">EV/EBITDA</button>
+        <button class="method-btn" data-method="rdcf">Reverse DCF</button>
       </div>
 
       <!-- DDM -->
@@ -1117,6 +1119,105 @@
         </div>
       </div>
     </div>
+
+      <!-- EV/EBITDA -->
+      <div id="method-evebitda" class="method-panel">
+        <p class="method-desc">Enterprise Value / EBITDA — values the firm using an industry multiple, then backs out debt and cash to arrive at equity value per share.</p>
+        <div class="input-row" style="margin-bottom:12px">
+          <div class="input-group">
+            <label>EBITDA / Share ($)</label>
+            <input type="number" id="s-ebitda" value="18.00" min="0" step="0.1">
+          </div>
+          <div class="input-group">
+            <label>D&amp;A / Share ($)</label>
+            <input type="number" id="s-da" value="3.00" min="0" step="0.1">
+          </div>
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="slider-name">Target EV/EBITDA Multiple</span>
+            <span class="slider-value" id="s-ev-mult-val">12.0<span class="unit">x</span></span>
+          </div>
+          <input type="range" id="s-ev-mult" min="3" max="40" step="0.5" value="12">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="slider-name">EBITDA Growth Rate (5yr)</span>
+            <span class="slider-value" id="s-ebitda-g-val">8.0<span class="unit">%</span></span>
+          </div>
+          <input type="range" id="s-ebitda-g" min="-10" max="40" step="0.5" value="8">
+        </div>
+        <div class="metrics" style="margin-top:16px">
+          <div class="metric">
+            <div class="metric-label">Intrinsic Value</div>
+            <div class="metric-value" id="s-ev-intrinsic">—</div>
+            <div class="metric-sub">Equity / Share</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Upside / Downside</div>
+            <div class="metric-value" id="s-ev-upside">—</div>
+            <div class="metric-sub">vs Market Price</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Current EV/EBITDA</div>
+            <div class="metric-value" id="s-ev-current">—</div>
+            <div class="metric-sub">Implied by price</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">EV (Total Firm)</div>
+            <div class="metric-value" id="s-ev-total">—</div>
+            <div class="metric-sub">Mkt Cap + Debt − Cash</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reverse DCF -->
+      <div id="method-rdcf" class="method-panel">
+        <p class="method-desc">Reverse DCF — asks "what growth rate does the current stock price imply?" Solves for the FCF growth rate baked into today's valuation.</p>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="slider-name">Discount Rate (WACC)</span>
+            <span class="slider-value" id="s-rdcf-wacc-val">10.0<span class="unit">%</span></span>
+          </div>
+          <input type="range" id="s-rdcf-wacc" min="4" max="20" step="0.1" value="10">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="slider-name">High-Growth Period</span>
+            <span class="slider-value" id="s-rdcf-phase-val">10<span class="unit"> yrs</span></span>
+          </div>
+          <input type="range" id="s-rdcf-phase" min="3" max="20" step="1" value="10">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="slider-name">Terminal Growth Rate</span>
+            <span class="slider-value" id="s-rdcf-tg-val">3.0<span class="unit">%</span></span>
+          </div>
+          <input type="range" id="s-rdcf-tg" min="0" max="6" step="0.1" value="3">
+        </div>
+        <div class="metrics" style="margin-top:16px">
+          <div class="metric">
+            <div class="metric-label">Implied FCF Growth</div>
+            <div class="metric-value" id="s-rdcf-g">—</div>
+            <div class="metric-sub">Growth priced in</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Assessment</div>
+            <div class="metric-value" id="s-rdcf-verdict" style="font-size:14px">—</div>
+            <div class="metric-sub">vs historical norms</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Bear Case Value</div>
+            <div class="metric-value" id="s-rdcf-bear">—</div>
+            <div class="metric-sub">At 50% implied growth</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Bull Case Value</div>
+            <div class="metric-value" id="s-rdcf-bull">—</div>
+            <div class="metric-sub">At 150% implied growth</div>
+          </div>
+        </div>
+      </div>
 
     <!-- Valuation Comparison: full width -->
     <div class="card card-full">
@@ -1434,15 +1535,20 @@
       For illustrative and educational purposes only. Not financial advice. All models are simplifications — consult a licensed financial advisor before making investment decisions.
     </div>
     <div style="display:flex;align-items:center;gap:16px">
+      <button id="pdf-btn" class="share-btn">
+        <span id="pdf-btn-text">⬇ Export PDF</span>
+      </button>
       <button id="share-btn" class="share-btn">
         <span id="share-btn-text">⤴ Share Analysis</span>
       </button>
-      <span>APEX v1.1 · 2025</span>
+      <span>APEX v1.2 · 2025</span>
     </div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // ─── TAB SWITCHING ────────────────────────────────────────────
 const tabBtns = document.querySelectorAll('.tab-btn');
@@ -1683,9 +1789,108 @@ function calcStock() {
     setMetric('s-netnet',      '$' + ncav.toFixed(2),                                 ncav > price);
   }
 
+  // ══ EV/EBITDA ════════════════════════════════════════════════
+  let evEbitdaValue = null;
+  {
+    const ebitdaPS  = +document.getElementById('s-ebitda').value  || 18;
+    const daPS      = +document.getElementById('s-da').value      || 3;
+    const evMult    = +document.getElementById('s-ev-mult').value || 12;
+    const ebitdaG   = +document.getElementById('s-ebitda-g').value / 100;
+
+    sv('s-ev-mult-val',   evMult.toFixed(1),    'x');
+    sv('s-ebitda-g-val',  (ebitdaG*100).toFixed(1), '%');
+
+    // Project EBITDA 5 years forward, then apply multiple
+    const fwdEbitdaPS = ebitdaPS * Math.pow(1 + ebitdaG, 5);
+    const firmValuePS = fwdEbitdaPS * evMult;           // EV per share at exit
+    const equityPS    = firmValuePS - (debt / shares) + (cash / shares);
+    const pvEquity    = equityPS / Math.pow(1 + r, 5);  // discount back 5 years
+    evEbitdaValue     = Math.max(pvEquity, 0);
+
+    const currentEV   = (price * shares + debt - cash) * 1e6;  // total EV in $
+    const currentMult = ebitdaPS > 0 ? (currentEV / (ebitdaPS * shares * 1e6)).toFixed(1) : 'N/A';
+    const evUpside    = ((evEbitdaValue - price) / price * 100);
+
+    setMetric('s-ev-intrinsic', '$' + evEbitdaValue.toFixed(2), evEbitdaValue > price);
+    setMetric('s-ev-upside',    (evUpside >= 0 ? '+' : '') + evUpside.toFixed(1) + '%', evUpside > 0);
+    setMetric('s-ev-current',   currentMult + 'x', null);
+    setMetric('s-ev-total',     fmt$((price * shares + debt - cash) * 1e6), null);
+  }
+
+  // ══ Reverse DCF ══════════════════════════════════════════════
+  let rdcfImpliedG = null;
+  {
+    const rdcfWacc  = +document.getElementById('s-rdcf-wacc').value  / 100;
+    const rdcfPhase = +document.getElementById('s-rdcf-phase').value;
+    const rdcfTg    = +document.getElementById('s-rdcf-tg').value    / 100;
+
+    sv('s-rdcf-wacc-val',  (rdcfWacc*100).toFixed(1),  '%');
+    sv('s-rdcf-phase-val', rdcfPhase,                   ' yrs');
+    sv('s-rdcf-tg-val',    (rdcfTg*100).toFixed(1),     '%');
+
+    // Binary search: find g such that DCF(fcfps, g, rdcfWacc, rdcfPhase, rdcfTg) = equity value of price
+    const targetEquity = price - (cash / shares) + (debt / shares);
+
+    function dcfAtGrowth(g) {
+      let pv = 0, fcf = fcfps * (1 + g);
+      for (let t = 1; t <= rdcfPhase; t++) {
+        pv += fcf / Math.pow(1 + rdcfWacc, t);
+        fcf *= (1 + g);
+      }
+      if (rdcfWacc > rdcfTg) {
+        const tv = fcf * (1 + rdcfTg) / (rdcfWacc - rdcfTg);
+        pv += tv / Math.pow(1 + rdcfWacc, rdcfPhase);
+      }
+      return pv;
+    }
+
+    // Binary search between -20% and +60%
+    let lo = -0.20, hi = 0.60, mid = 0;
+    for (let i = 0; i < 60; i++) {
+      mid = (lo + hi) / 2;
+      const val = dcfAtGrowth(mid);
+      if (Math.abs(val - targetEquity) < 0.01) break;
+      if (val < targetEquity) lo = mid; else hi = mid;
+    }
+    rdcfImpliedG = mid;
+
+    // Verdict
+    let verdict, verdictGood;
+    if (rdcfImpliedG > 0.25)      { verdict = 'Very Demanding'; verdictGood = false; }
+    else if (rdcfImpliedG > 0.15) { verdict = 'Optimistic';     verdictGood = false; }
+    else if (rdcfImpliedG > 0.08) { verdict = 'Achievable';     verdictGood = true;  }
+    else if (rdcfImpliedG > 0.02) { verdict = 'Conservative';   verdictGood = true;  }
+    else                           { verdict = 'Distressed';     verdictGood = null;  }
+
+    // Bear / Bull scenarios
+    const bearG   = rdcfImpliedG * 0.5;
+    const bullG   = rdcfImpliedG * 1.5;
+    const bearVal = Math.max(dcfAtGrowth(bearG) + (cash / shares) - (debt / shares), 0);
+    const bullVal = Math.max(dcfAtGrowth(bullG) + (cash / shares) - (debt / shares), 0);
+
+    setMetric('s-rdcf-g',       (rdcfImpliedG * 100).toFixed(1) + '%/yr', null);
+    setMetric('s-rdcf-verdict', verdict, verdictGood);
+    setMetric('s-rdcf-bear',    '$' + bearVal.toFixed(2), bearVal > price);
+    setMetric('s-rdcf-bull',    '$' + bullVal.toFixed(2), bullVal > price);
+  }
+
   // ══ Valuation Comparison Bar Chart ═══════════════════════════
-  const allMethods = ['Market Price', 'DDM', 'DCF', 'P/E', 'P/B', 'P/FCF', 'Graham', 'Graham Num'];
-  const allValues  = [price, ddmValue, dcfValue, peImplied, pbImplied, pfcfImplied, grahamFormValue, grahamNum];
+  const allMethods = ['Market', 'DDM', 'DCF', 'P/E', 'P/B', 'P/FCF', 'Graham', 'Graham №', 'EV/EBITDA', 'Rev. DCF'];
+  const allValues  = [price, ddmValue, dcfValue, peImplied, pbImplied, pfcfImplied, grahamFormValue, grahamNum, evEbitdaValue, rdcfImpliedG !== null ? Math.max(dcfValue || price, 0) : null];
+
+  // For Reverse DCF bar, show the bear/mid/bull range — use bull as the bar value
+  const rdcfBullForChart = rdcfImpliedG !== null ? (() => {
+    const bullG2 = rdcfImpliedG * 1.5;
+    let pv2 = 0, fcf2 = fcfps * (1 + bullG2);
+    const rWacc = +document.getElementById('s-rdcf-wacc').value / 100;
+    const rPhase = +document.getElementById('s-rdcf-phase').value;
+    const rTg = +document.getElementById('s-rdcf-tg').value / 100;
+    for (let t = 1; t <= rPhase; t++) { pv2 += fcf2 / Math.pow(1 + rWacc, t); fcf2 *= (1 + bullG2); }
+    if (rWacc > rTg) pv2 += fcf2 * (1 + rTg) / (rWacc - rTg) / Math.pow(1 + rWacc, rPhase);
+    return Math.max(pv2 + (cash / shares) - (debt / shares), 0);
+  })() : null;
+  allValues[9] = rdcfBullForChart;
+
   const barColors  = allValues.map((v, i) => {
     if (i === 0) return '#ffffff30';
     if (v === null) return '#ffffff10';
@@ -2260,33 +2465,28 @@ async function loadTickerData(symbol) {
 }
 
 
-// ─── LIVE MORTGAGE RATES (FRED — St. Louis Fed, public endpoint) ─
+// ─── LIVE MORTGAGE RATES (homebuyer.com — public, no key) ────────
 async function fetchMortgageRate() {
   try {
-    const url = 'https://api.stlouisfed.org/fred/series/observations?series_id=MORTGAGE30US&sort_order=desc&limit=2&file_type=json&api_key=a2d610cb4b27d7d1cf2b6c2c16c79e54';
-    const res  = await fetch(url);
+    const res  = await fetch('https://api.homebuyer.com/v1/rates');
     const data = await res.json();
-    const obs  = data.observations;
-    if (!obs || !obs.length) throw new Error('No data');
 
-    const latest = obs[0];
-    const prev   = obs[1];
-    const rate   = parseFloat(latest.value);
-    const prevR  = parseFloat(prev.value);
-    const change = (rate - prevR).toFixed(2);
+    const rate   = data.freddie_mac_rate || data.national_average_rate || data.rate_30yr;
+    if (!rate) throw new Error('No rate');
+    const change = data.rate_change_weekly;
     const dir    = change >= 0 ? '▲' : '▼';
     const color  = change >= 0 ? '#ff8080' : '#00d4aa';
+    const updated = data.freddie_mac_last_updated || data.last_updated || '';
 
     document.getElementById('r-live-rate').innerHTML =
-      `30-yr Fixed: <strong style="color:var(--accent-real)">${rate.toFixed(2)}%</strong> ` +
-      `<span style="color:${color};font-size:11px">${dir} ${Math.abs(change)}% vs prior week</span>`;
+      `30-yr Fixed: <strong style="color:var(--accent-real)">${parseFloat(rate).toFixed(2)}%</strong> ` +
+      `<span style="color:${color};font-size:11px">${dir} ${Math.abs(change).toFixed(3)}% this week</span>`;
     document.getElementById('r-live-meta').textContent =
-      `Freddie Mac via FRED · Week of ${latest.date}`;
+      `Freddie Mac · Updated ${updated}`;
 
-    // Auto-set mortgage slider to live rate
-    const slider = document.getElementById('r-mort');
-    const clamped = Math.min(Math.max(rate, 2), 15);
-    slider.value = clamped.toFixed(1);
+    const slider  = document.getElementById('r-mort');
+    const clamped = Math.min(Math.max(parseFloat(rate), 2), 15);
+    slider.value  = clamped.toFixed(1);
     document.getElementById('r-mort-val').innerHTML =
       clamped.toFixed(1) + '<span class="unit">%</span>';
     calcReal();
@@ -2424,11 +2624,194 @@ wireInputs(['s-price','s-eps-ttm','s-div','s-bvps','s-fcf','s-shares','s-debt','
             's-fcfg1','s-fcfg2','s-dcf-phase','s-dcf-tg',
             's-pe','s-pb','s-pfcf','s-eps-g',
             's-graham-g','s-aaa','s-graham-mos'], calcStock);
+wireInputs(['s-price','s-eps-ttm','s-div','s-bvps','s-fcf','s-shares','s-debt','s-cash',
+            's-ror','s-rf','s-beta','s-hold',
+            's-growth','s-ddm-phase','s-ddm-tg',
+            's-fcfg1','s-fcfg2','s-dcf-phase','s-dcf-tg',
+            's-pe','s-pb','s-pfcf','s-eps-g',
+            's-graham-g','s-aaa','s-graham-mos',
+            's-ebitda','s-da','s-ev-mult','s-ebitda-g',
+            's-rdcf-wacc','s-rdcf-phase','s-rdcf-tg'], calcStock);
 wireInputs(['b-face','b-price','b-coupon','b-years','b-disc','b-inf'], calcBond);
 wireInputs(['r-price','r-rent','r-down','r-mort','r-appr','r-vac','r-exp'], calcReal);
 wireInputs(['c-price','c-invest','c-ret','c-vol','c-hold','c-stake'], calcCrypto);
 
 function updateAll() { calcStock(); calcBond(); calcReal(); calcCrypto(); }
+
+// ─── PDF EXPORT ───────────────────────────────────────────────────
+document.getElementById('pdf-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('pdf-btn');
+  document.getElementById('pdf-btn-text').textContent = '⏳ Generating…';
+  btn.disabled = true;
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const W = 210, M = 14;
+    let y = M;
+
+    // ── Helpers ─────────────────────────────────────────────────
+    const hex2rgb = h => {
+      const r = parseInt(h.slice(1,3),16), g = parseInt(h.slice(3,5),16), b = parseInt(h.slice(5,7),16);
+      return [r,g,b];
+    };
+    const setColor = (hex) => { const [r,g,b] = hex2rgb(hex); doc.setTextColor(r,g,b); };
+    const setFill  = (hex) => { const [r,g,b] = hex2rgb(hex); doc.setFillColor(r,g,b); };
+    const setDraw  = (hex) => { const [r,g,b] = hex2rgb(hex); doc.setDrawColor(r,g,b); };
+
+    const getVal = id => { const el = document.getElementById(id); return el ? el.textContent.trim() : '—'; };
+    const getInput = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+
+    // ── Background ───────────────────────────────────────────────
+    setFill('#0a0a0f'); doc.rect(0, 0, W, 297, 'F');
+
+    // ── Header bar ───────────────────────────────────────────────
+    setFill('#111118'); doc.rect(0, 0, W, 22, 'F');
+    setColor('#00d4aa'); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+    doc.text('APEX', M, 14);
+    setColor('#6b6b8a'); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    doc.text('Investment Valuation Engine', M + 18, 14);
+    setColor('#6b6b8a'); doc.setFontSize(8);
+    doc.text(`Generated ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}`, W - M, 14, { align: 'right' });
+    y = 30;
+
+    // ── Company info ─────────────────────────────────────────────
+    const company = document.getElementById('s-company-name')?.textContent || '';
+    const ticker  = document.getElementById('s-ticker-input')?.value || '';
+    if (company || ticker) {
+      setColor('#e8e8f0'); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.text(company || ticker, M, y);
+      if (company && ticker) {
+        setColor('#6b6b8a'); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        doc.text(ticker, M + doc.getTextWidth(company) + 3, y);
+      }
+      y += 8;
+    }
+
+    // ── Section header helper ────────────────────────────────────
+    const sectionHeader = (title, color) => {
+      if (y > 270) { doc.addPage(); setFill('#0a0a0f'); doc.rect(0,0,W,297,'F'); y = M; }
+      setFill(color + '22'); setDraw(color + '66');
+      doc.roundedRect(M, y, W - 2*M, 7, 1, 1, 'FD');
+      setColor(color); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.text(title.toUpperCase(), M + 3, y + 4.8);
+      y += 11;
+    };
+
+    // ── Metric row helper ────────────────────────────────────────
+    const metricRow = (pairs) => {
+      const colW = (W - 2*M) / pairs.length;
+      pairs.forEach(([label, val, color], i) => {
+        const x = M + i * colW;
+        setColor('#6b6b8a'); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.text(label.toUpperCase(), x + 2, y + 3);
+        setColor(color || '#e8e8f0'); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+        doc.text(String(val), x + 2, y + 9);
+      });
+      y += 14;
+    };
+
+    // ── STOCK VALUATION SECTION ──────────────────────────────────
+    sectionHeader('Stock Valuation — Core Inputs', '#00d4aa');
+    metricRow([
+      ['Current Price', '$' + getInput('s-price')],
+      ['EPS (TTM)',     '$' + getInput('s-eps-ttm')],
+      ['Dividend/Share','$' + getInput('s-div')],
+      ['Book Value/Share','$' + getInput('s-bvps')],
+    ]);
+    metricRow([
+      ['FCF/Share',     '$' + getInput('s-fcf')],
+      ['Shares (M)',    getInput('s-shares') + 'M'],
+      ['Total Debt',    '$' + getInput('s-debt') + 'M'],
+      ['Cash',          '$' + getInput('s-cash') + 'M'],
+    ]);
+
+    sectionHeader('Valuation Results — All Models', '#00d4aa');
+    const upDown = (id) => {
+      const v = getVal(id);
+      const num = parseFloat(v.replace(/[$%+]/g,''));
+      const color = isNaN(num) ? '#e8e8f0' : (v.startsWith('+') || num > parseFloat(getInput('s-price'))) ? '#00d4aa' : '#ff5757';
+      return [v, color];
+    };
+
+    metricRow([
+      ['DDM Value',       ...upDown('s-ddm-val')],
+      ['DDM Upside',      ...upDown('s-ddm-upside')],
+      ['Div Yield',       getVal('s-div-yield'), '#e8e8f0'],
+      ['Payout Ratio',    getVal('s-payout'), '#e8e8f0'],
+    ]);
+    metricRow([
+      ['DCF Value',       ...upDown('s-dcf-val')],
+      ['DCF Margin/Safety',...upDown('s-dcf-mos')],
+      ['Enterprise Value', getVal('s-ev'), '#e8e8f0'],
+      ['FCF Yield',       getVal('s-fcfy'), '#e8e8f0'],
+    ]);
+    metricRow([
+      ['P/E Implied',     ...upDown('s-pe-implied')],
+      ['P/B Implied',     ...upDown('s-pb-implied')],
+      ['P/FCF Implied',   ...upDown('s-pfcf-implied')],
+      ['PEG Ratio',       getVal('s-peg'), '#e8e8f0'],
+    ]);
+    metricRow([
+      ['Graham Number',   ...upDown('s-graham-num')],
+      ['Graham Formula',  ...upDown('s-graham-form')],
+      ['Buy Below (MoS)', ...upDown('s-graham-buy')],
+      ['Net-Net Value',   getVal('s-netnet'), '#e8e8f0'],
+    ]);
+    metricRow([
+      ['EV/EBITDA Value',  ...upDown('s-ev-intrinsic')],
+      ['EV/EBITDA Upside', ...upDown('s-ev-upside')],
+      ['Curr. EV/EBITDA',  getVal('s-ev-current'), '#e8e8f0'],
+      ['Reverse DCF g',    getVal('s-rdcf-g'), '#e8e8f0'],
+    ]);
+    metricRow([
+      ['Mkt Expectation',  getVal('s-rdcf-verdict'), '#e8e8f0'],
+      ['Bear Case',        ...upDown('s-rdcf-bear')],
+      ['Bull Case',        ...upDown('s-rdcf-bull')],
+      ['Discount Rate',    getInput('s-ror') + '%', '#6b6b8a'],
+    ]);
+
+    // ── Capture valuation bar chart ──────────────────────────────
+    const chartCanvas = document.getElementById('s-compare-chart');
+    if (chartCanvas) {
+      try {
+        const imgData = chartCanvas.toDataURL('image/png');
+        const chartH = 35;
+        if (y + chartH > 275) { doc.addPage(); setFill('#0a0a0f'); doc.rect(0,0,W,297,'F'); y = M; }
+        sectionHeader('Valuation Comparison Chart', '#00d4aa');
+        doc.addImage(imgData, 'PNG', M, y, W - 2*M, chartH);
+        y += chartH + 6;
+      } catch(e) {}
+    }
+
+    // ── Key assumptions ──────────────────────────────────────────
+    if (y + 30 > 280) { doc.addPage(); setFill('#0a0a0f'); doc.rect(0,0,W,297,'F'); y = M; }
+    sectionHeader('Key Assumptions', '#4f8ef7');
+    metricRow([
+      ['Req. Return',  getInput('s-ror') + '%'],
+      ['Risk-Free',    getInput('s-rf') + '%'],
+      ['Beta',         getInput('s-beta')],
+      ['Hold Period',  getInput('s-hold') + ' yrs'],
+    ]);
+
+    // ── Disclaimer ───────────────────────────────────────────────
+    if (y + 12 > 285) { doc.addPage(); setFill('#0a0a0f'); doc.rect(0,0,W,297,'F'); y = M; }
+    setFill('#111118'); doc.rect(0, 285, W, 12, 'F');
+    setColor('#6b6b8a'); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+    doc.text('For illustrative and educational purposes only. Not financial advice. All models are simplifications — consult a licensed financial advisor before making investment decisions.', W/2, 291, { align: 'center', maxWidth: W - 2*M });
+
+    // ── Save ─────────────────────────────────────────────────────
+    const filename = ticker ? `APEX_${ticker}_${new Date().toISOString().slice(0,10)}.pdf` : `APEX_Valuation_${new Date().toISOString().slice(0,10)}.pdf`;
+    doc.save(filename);
+
+  } catch(err) {
+    console.error('PDF error:', err);
+    alert('PDF generation failed: ' + err.message);
+  } finally {
+    document.getElementById('pdf-btn-text').textContent = '⬇ Export PDF';
+    document.getElementById('pdf-btn').disabled = false;
+  }
+});
 
 // Load URL params first, then render, then fetch live data
 loadFromURL();
