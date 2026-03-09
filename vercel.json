@@ -1,24 +1,16 @@
 {
   "version": 2,
   "routes": [
-    {
-      "src": "/api/finnhub(.*)",
-      "dest": "/api/finnhub.js"
-    },
-    {
-      "src": "/api/mortgage",
-      "dest": "/api/mortgage.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
+    { "src": "/api/finnhub(.*)", "dest": "/api/finnhub.js" },
+    { "src": "/api/mortgage",    "dest": "/api/mortgage.js" },
+    { "src": "/app",             "dest": "/public/app.html" },
+    { "src": "/(.*)",            "dest": "/public/$1" }
   ],
   "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Origin",  "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
       ]
