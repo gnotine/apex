@@ -954,6 +954,189 @@
   .cmp-table .best-header-col { color: var(--accent-stock) !important; }
   .cmp-table .best-header-col::after { content: ' ★'; font-size: 10px; }
 
+  /* ── Universal Save Bar ──────────────────────────────────────── */
+  .wl-save-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 4px 0 16px;
+  }
+  .wl-save-bar-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .wl-save-bar-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .bond-save-btn   { background: var(--accent-bond);   color: #fff; }
+  .real-save-btn   { background: var(--accent-real);   color: #fff; }
+  .crypto-save-btn { background: var(--accent-crypto); color: #fff; }
+
+  /* ── Save Modal ──────────────────────────────────────────────── */
+  .wl-modal-overlay {
+    position: fixed; inset: 0;
+    background: #00000080;
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .wl-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 24px 60px #00000060;
+    overflow: hidden;
+    animation: modalIn 0.18s ease;
+  }
+  @keyframes modalIn {
+    from { transform: scale(0.95) translateY(8px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+  }
+  .wl-modal-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wl-modal-title    { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+  .wl-modal-subtitle { font-size: 11px; color: var(--muted); }
+  .wl-modal-close {
+    background: none; border: none; color: var(--muted);
+    font-size: 16px; cursor: pointer; padding: 2px 6px;
+    border-radius: 6px; transition: all 0.15s;
+  }
+  .wl-modal-close:hover { color: var(--text); background: var(--surface2); }
+
+  .wl-modal-body { padding: 20px 24px; }
+  .wl-modal-label { font-size: 10px; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; display: block; margin-bottom: 8px; }
+  .wl-modal-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+  }
+  .wl-modal-input:focus { border-color: var(--accent-stock); }
+
+  .wl-modal-preview {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .wl-preview-item { display: flex; flex-direction: column; gap: 2px; }
+  .wl-preview-label { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; }
+  .wl-preview-val   { font-size: 12px; color: var(--text); }
+
+  .wl-modal-footer {
+    display: flex; justify-content: flex-end; gap: 10px;
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .wl-modal-cancel {
+    background: none; border: 1px solid var(--border2);
+    border-radius: 10px; padding: 9px 18px;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600;
+    color: var(--muted); cursor: pointer; transition: all 0.15s;
+  }
+  .wl-modal-cancel:hover { color: var(--text); border-color: var(--border2); }
+  .wl-modal-save {
+    border: none; border-radius: 10px; padding: 9px 22px;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; color: var(--bg);
+    background: var(--accent-stock);
+  }
+  .wl-modal-save:hover { opacity: 0.85; }
+  .wl-modal-save.bond-modal   { background: var(--accent-bond); color: #fff; }
+  .wl-modal-save.real-modal   { background: var(--accent-real); color: #fff; }
+  .wl-modal-save.crypto-modal { background: var(--accent-crypto); color: #fff; }
+
+  /* ── Watchlist card multi-asset ──────────────────────────────── */
+  .wl-card-type-badge {
+    font-size: 8px; font-weight: 700; font-family: 'Syne', sans-serif;
+    padding: 2px 7px; border-radius: 5px; letter-spacing: 0.5px;
+    text-transform: uppercase; display: inline-block; margin-bottom: 6px;
+  }
+  .wl-type-stock  { background: var(--accent-stock)20;  color: var(--accent-stock);  border: 1px solid var(--accent-stock)40; }
+  .wl-type-bond   { background: var(--accent-bond)20;   color: var(--accent-bond);   border: 1px solid var(--accent-bond)40; }
+  .wl-type-real   { background: var(--accent-real)20;   color: var(--accent-real);   border: 1px solid var(--accent-real)40; }
+  .wl-type-crypto { background: var(--accent-crypto)20; color: var(--accent-crypto); border: 1px solid var(--accent-crypto)40; }
+
+  .wl-card-accent-stock  { border-top-color: var(--accent-stock)80 !important; }
+  .wl-card-accent-bond   { border-top-color: var(--accent-bond)80 !important; }
+  .wl-card-accent-real   { border-top-color: var(--accent-real)80 !important; }
+  .wl-card-accent-crypto { border-top-color: var(--accent-crypto)80 !important; }
+
+  .watchlist-card { border-top: 3px solid transparent; }
+
+  /* Editable name */
+  .wl-name-display {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--text);
+    cursor: pointer;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.15s;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
+  }
+  .wl-name-display:hover { border-bottom-color: var(--border2); }
+  .wl-name-input {
+    background: var(--surface2);
+    border: 1px solid var(--accent-stock);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+    width: 100%;
+    display: none;
+  }
+
+  /* ── Watchlist filter bar ────────────────────────────────────── */
+  .wl-filter-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .wl-filter-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+  .wl-filter-btn.active { color: var(--text); border-color: var(--border2); background: var(--surface2); }
+  .wl-filter-btn.active.f-stock  { color: var(--accent-stock);  border-color: var(--accent-stock)50;  background: var(--accent-stock)10; }
+  .wl-filter-btn.active.f-bond   { color: var(--accent-bond);   border-color: var(--accent-bond)50;   background: var(--accent-bond)10; }
+  .wl-filter-btn.active.f-real   { color: var(--accent-real);   border-color: var(--accent-real)50;   background: var(--accent-real)10; }
+  .wl-filter-btn.active.f-crypto { color: var(--accent-crypto); border-color: var(--accent-crypto)50; background: var(--accent-crypto)10; }
+
   /* ── Watchlist ─────────────────────────────────────────────── */
   .watchlist-count-badge {
     display: inline-flex;
@@ -1163,7 +1346,7 @@
         <div class="ticker-field-chip" id="chip-debt"></div>
         <div class="ticker-field-chip" id="chip-cash"></div>
         <div class="ticker-field-chip" id="chip-ebitda"></div>
-        <button id="add-watchlist-btn" class="watchlist-add-btn" onclick="addToWatchlist()">★ Add to Watchlist</button>
+        <button id="add-watchlist-btn" class="watchlist-add-btn" onclick="openSaveModal('stock')">★ Save to Watchlist</button>
       </div>
     </div>
 
@@ -1620,6 +1803,9 @@
         <canvas id="b-proj-chart"></canvas>
       </div>
     </div>
+    <div class="wl-save-bar bond-bar">
+      <button class="wl-save-bar-btn bond-save-btn" onclick="openSaveModal('bond')">★ Save to Watchlist</button>
+    </div>
   </div>
 
   <!-- REAL ESTATE -->
@@ -1713,6 +1899,9 @@
       <div class="projection-wrap">
         <canvas id="r-proj-chart"></canvas>
       </div>
+    </div>
+    <div class="wl-save-bar real-bar">
+      <button class="wl-save-bar-btn real-save-btn" onclick="openSaveModal('real')">★ Save to Watchlist</button>
     </div>
   </div>
 
@@ -1817,6 +2006,9 @@
         <canvas id="c-proj-chart"></canvas>
       </div>
     </div>
+    <div class="wl-save-bar crypto-bar">
+      <button class="wl-save-bar-btn crypto-save-btn" onclick="openSaveModal('crypto')">★ Save to Watchlist</button>
+    </div>
   </div>
 
   <!-- COMPARE -->
@@ -1881,19 +2073,48 @@
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
         <div>
           <div class="card-title" style="margin-bottom:4px">★ My Watchlist <span class="badge" style="background:var(--accent-stock)20;color:var(--accent-stock);border-color:var(--accent-stock)40" id="watchlist-header-count"></span></div>
-          <div style="font-size:11px;color:var(--muted)">Saved stocks with your custom valuation assumptions. Click any card to reload.</div>
+          <div style="font-size:11px;color:var(--muted)">Saved valuations across all asset classes. Click any name to rename. Click a card to reload.</div>
         </div>
         <button onclick="clearWatchlist()" class="watchlist-clear-btn" id="watchlist-clear-btn" style="display:none">✕ Clear All</button>
+      </div>
+      <div class="wl-filter-bar" id="wl-filter-bar" style="display:none">
+        <button class="wl-filter-btn active" data-filter="all" onclick="setWlFilter('all',this)">All</button>
+        <button class="wl-filter-btn f-stock"  data-filter="stock"  onclick="setWlFilter('stock',this)">Stocks</button>
+        <button class="wl-filter-btn f-bond"   data-filter="bond"   onclick="setWlFilter('bond',this)">Bonds</button>
+        <button class="wl-filter-btn f-real"   data-filter="real"   onclick="setWlFilter('real',this)">Real Estate</button>
+        <button class="wl-filter-btn f-crypto" data-filter="crypto" onclick="setWlFilter('crypto',this)">Crypto</button>
       </div>
     </div>
 
     <div id="watchlist-empty" class="watchlist-empty" style="display:none">
       <div class="watchlist-empty-icon">★</div>
       <div class="watchlist-empty-title">Your watchlist is empty</div>
-      <div class="watchlist-empty-sub">Load a stock in the Stocks tab and click "Add to Watchlist" to save it here with all your assumptions.</div>
+      <div class="watchlist-empty-sub">Click "★ Save to Watchlist" on any tab — Stocks, Bonds, Real Estate, or Crypto — to save a named valuation here.</div>
     </div>
 
     <div id="watchlist-grid" class="watchlist-grid"></div>
+  </div>
+
+  <!-- SAVE TO WATCHLIST MODAL -->
+  <div id="wl-modal-overlay" class="wl-modal-overlay" style="display:none" onclick="closeSaveModal(event)">
+    <div class="wl-modal" onclick="event.stopPropagation()">
+      <div class="wl-modal-header">
+        <div>
+          <div class="wl-modal-title">★ Save to Watchlist</div>
+          <div id="wl-modal-subtitle" class="wl-modal-subtitle"></div>
+        </div>
+        <button class="wl-modal-close" onclick="closeSaveModal()">✕</button>
+      </div>
+      <div class="wl-modal-body">
+        <label class="wl-modal-label">Name this valuation</label>
+        <input type="text" id="wl-modal-name" class="wl-modal-input" placeholder="e.g. AAPL Bull Case, My Rental Property…" maxlength="50" autocomplete="off">
+        <div id="wl-modal-preview" class="wl-modal-preview"></div>
+      </div>
+      <div class="wl-modal-footer">
+        <button class="wl-modal-cancel" onclick="closeSaveModal()">Cancel</button>
+        <button id="wl-modal-save-btn" class="wl-modal-save" onclick="confirmSaveToWatchlist()">Save</button>
+      </div>
+    </div>
   </div>
 
   <div class="footer">
@@ -3421,8 +3642,401 @@ function renderCmpChart() {
   });
 }
 
-// ─── WATCHLIST ────────────────────────────────────────────────────
-const WL_KEY = 'apex_watchlist_v1';
+// ─── WATCHLIST (Universal — all asset classes) ───────────────────
+const WL_KEY = 'apex_watchlist_v2';
+let wlFilter = 'all';
+
+const ASSET_INPUT_IDS = {
+  stock: [
+    's-price','s-eps-ttm','s-div','s-bvps','s-fcf','s-shares','s-debt','s-cash',
+    's-ror','s-rf','s-beta','s-hold',
+    's-growth','s-ddm-phase','s-ddm-tg',
+    's-fcfg1','s-fcfg2','s-dcf-phase','s-dcf-tg',
+    's-pe','s-pb','s-pfcf','s-eps-g',
+    's-graham-g','s-aaa','s-graham-mos',
+    's-rdcf-wacc','s-rdcf-phase','s-rdcf-tg',
+  ],
+  bond:   ['b-face','b-price','b-coupon','b-years','b-disc','b-inf'],
+  real:   ['r-price','r-rent','r-down','r-mort','r-appr','r-vac','r-exp'],
+  crypto: ['c-price','c-invest','c-ret','c-vol','c-hold','c-stake'],
+};
+
+const ASSET_LABELS = { stock: 'Stock', bond: 'Bond', real: 'Real Estate', crypto: 'Crypto' };
+const ASSET_ACCENTS = { stock: 'var(--accent-stock)', bond: 'var(--accent-bond)', real: 'var(--accent-real)', crypto: 'var(--accent-crypto)' };
+
+function loadWatchlist() {
+  try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function saveWatchlist(list) {
+  localStorage.setItem(WL_KEY, JSON.stringify(list));
+  updateWatchlistBadge();
+}
+function updateWatchlistBadge() {
+  const list = loadWatchlist();
+  const badge = document.getElementById('watchlist-count-badge');
+  if (list.length > 0) { badge.textContent = list.length; badge.style.display = 'inline-flex'; }
+  else badge.style.display = 'none';
+}
+
+// ── Save Modal ────────────────────────────────────────────────────
+let _pendingSaveType = null;
+
+function openSaveModal(type) {
+  _pendingSaveType = type;
+  const overlay = document.getElementById('wl-modal-overlay');
+  const subtitle = document.getElementById('wl-modal-subtitle');
+  const nameInput = document.getElementById('wl-modal-name');
+  const saveBtn = document.getElementById('wl-modal-save-btn');
+  const preview = document.getElementById('wl-modal-preview');
+
+  // Set accent color on save button
+  saveBtn.className = `wl-modal-save ${type}-modal`;
+
+  // Default name suggestion
+  let defaultName = '';
+  if (type === 'stock') {
+    const ticker = document.getElementById('ticker-input')?.value?.trim().toUpperCase();
+    const company = document.getElementById('ticker-company-name')?.textContent;
+    defaultName = ticker ? (company ? `${ticker} — ${company}` : ticker) : '';
+    subtitle.textContent = 'Saving all stock valuation inputs & assumptions';
+  } else if (type === 'bond') {
+    const coupon = document.getElementById('b-coupon')?.value;
+    const years  = document.getElementById('b-years')?.value;
+    defaultName = coupon && years ? `${coupon}% Bond · ${years}yr` : 'Bond Valuation';
+    subtitle.textContent = 'Saving bond parameters & yield calculations';
+  } else if (type === 'real') {
+    const price = document.getElementById('r-price')?.value;
+    defaultName = price ? `Property · $${parseInt(price).toLocaleString()}` : 'Real Estate Analysis';
+    subtitle.textContent = 'Saving property parameters & cash flow analysis';
+  } else if (type === 'crypto') {
+    const activeCoin = document.querySelector('.coin-btn.active');
+    defaultName = activeCoin ? `${activeCoin.textContent} Analysis` : 'Crypto Valuation';
+    subtitle.textContent = 'Saving crypto parameters & projection assumptions';
+  }
+
+  nameInput.value = defaultName;
+
+  // Build preview of key metrics
+  preview.innerHTML = buildSavePreview(type);
+
+  overlay.style.display = 'flex';
+  setTimeout(() => nameInput.focus(), 50);
+
+  // Enter to save
+  nameInput.onkeydown = e => { if (e.key === 'Enter') confirmSaveToWatchlist(); };
+}
+
+function closeSaveModal(e) {
+  if (e && e.target !== document.getElementById('wl-modal-overlay')) return;
+  document.getElementById('wl-modal-overlay').style.display = 'none';
+  _pendingSaveType = null;
+}
+
+function buildSavePreview(type) {
+  const items = [];
+  if (type === 'stock') {
+    const price = document.getElementById('s-price')?.value;
+    const eps   = document.getElementById('s-eps-ttm')?.value;
+    const fcf   = document.getElementById('s-fcf')?.value;
+    const dcf   = document.getElementById('s-dcf-val')?.textContent;
+    if (price) items.push({ l: 'Price', v: '$' + parseFloat(price).toFixed(2) });
+    if (eps)   items.push({ l: 'EPS (TTM)', v: '$' + parseFloat(eps).toFixed(2) });
+    if (fcf)   items.push({ l: 'FCF/Share', v: '$' + parseFloat(fcf).toFixed(2) });
+    if (dcf && dcf !== '—') items.push({ l: 'DCF Value', v: dcf });
+  } else if (type === 'bond') {
+    const ytm  = document.getElementById('b-ytm')?.textContent;
+    const cy   = document.getElementById('b-cy')?.textContent;
+    const dur  = document.getElementById('b-dur')?.textContent;
+    const price = document.getElementById('b-price')?.value;
+    if (price) items.push({ l: 'Price', v: '$' + parseFloat(price).toFixed(0) });
+    if (ytm && ytm !== '—')  items.push({ l: 'YTM', v: ytm });
+    if (cy  && cy  !== '—')  items.push({ l: 'Current Yield', v: cy });
+    if (dur && dur !== '—')  items.push({ l: 'Duration', v: dur });
+  } else if (type === 'real') {
+    const cap  = document.getElementById('r-cap')?.textContent;
+    const coc  = document.getElementById('r-coc')?.textContent;
+    const cf   = document.getElementById('r-cf')?.textContent;
+    const grm  = document.getElementById('r-grm')?.textContent;
+    if (cap && cap !== '—') items.push({ l: 'Cap Rate', v: cap });
+    if (coc && coc !== '—') items.push({ l: 'Cash-on-Cash', v: coc });
+    if (cf  && cf  !== '—') items.push({ l: 'Monthly CF', v: cf });
+    if (grm && grm !== '—') items.push({ l: 'GRM', v: grm });
+  } else if (type === 'crypto') {
+    const sharpe = document.getElementById('c-sharpe')?.textContent;
+    const varEl  = document.getElementById('c-var')?.textContent;
+    const cagr   = document.getElementById('c-cagr')?.textContent;
+    const price  = document.getElementById('c-price')?.value;
+    if (price)  items.push({ l: 'Entry Price', v: '$' + parseFloat(price).toLocaleString() });
+    if (cagr && cagr !== '—')   items.push({ l: 'CAGR', v: cagr });
+    if (sharpe && sharpe !== '—') items.push({ l: 'Sharpe', v: sharpe });
+    if (varEl && varEl !== '—') items.push({ l: 'VaR (95%)', v: varEl });
+  }
+  if (!items.length) return '<div style="color:var(--muted);font-size:11px;text-align:center;padding:8px">Run the model first to see a preview</div>';
+  return items.map(i => `<div class="wl-preview-item"><div class="wl-preview-label">${i.l}</div><div class="wl-preview-val">${i.v}</div></div>`).join('');
+}
+
+function confirmSaveToWatchlist() {
+  const type = _pendingSaveType;
+  if (!type) return;
+
+  const name = document.getElementById('wl-modal-name').value.trim() || ASSET_LABELS[type] + ' Valuation';
+  const ids = ASSET_INPUT_IDS[type] || [];
+
+  // Capture all input values
+  const inputs = {};
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) inputs[id] = el.value;
+  });
+
+  // Capture snapshot metrics
+  const snapshot = {};
+  if (type === 'stock') {
+    const ticker  = document.getElementById('ticker-input')?.value?.trim().toUpperCase() || '';
+    const company = document.getElementById('ticker-company-name')?.textContent || '';
+    snapshot.ticker  = ticker;
+    snapshot.company = company;
+    snapshot.price   = document.getElementById('s-price')?.value;
+    snapshot.dcfVal  = document.getElementById('s-dcf-val')?.textContent;
+    snapshot.ddmVal  = document.getElementById('s-ddm-val')?.textContent;
+    snapshot.pe      = (() => {
+      const p = parseFloat(document.getElementById('s-price')?.value);
+      const e = parseFloat(document.getElementById('s-eps-ttm')?.value);
+      return p && e ? (p/e).toFixed(1) : null;
+    })();
+  } else if (type === 'bond') {
+    snapshot.coupon = document.getElementById('b-coupon')?.value;
+    snapshot.years  = document.getElementById('b-years')?.value;
+    snapshot.price  = document.getElementById('b-price')?.value;
+    snapshot.ytm    = document.getElementById('b-ytm')?.textContent;
+    snapshot.cy     = document.getElementById('b-cy')?.textContent;
+    snapshot.dur    = document.getElementById('b-dur')?.textContent;
+  } else if (type === 'real') {
+    snapshot.propPrice = document.getElementById('r-price')?.value;
+    snapshot.rent      = document.getElementById('r-rent')?.value;
+    snapshot.capRate   = document.getElementById('r-cap')?.textContent;
+    snapshot.coc       = document.getElementById('r-coc')?.textContent;
+    snapshot.monthlyCF = document.getElementById('r-cf')?.textContent;
+  } else if (type === 'crypto') {
+    const activeCoin = document.querySelector('.coin-btn.active');
+    snapshot.coin   = activeCoin?.textContent || 'Crypto';
+    snapshot.price  = document.getElementById('c-price')?.value;
+    snapshot.cagr   = document.getElementById('c-cagr')?.textContent;
+    snapshot.sharpe = document.getElementById('c-sharpe')?.textContent;
+    snapshot.varVal = document.getElementById('c-var')?.textContent;
+  }
+
+  const entry = {
+    id: Date.now().toString(),
+    type, name, inputs, snapshot,
+    savedAt: new Date().toISOString(),
+  };
+
+  const list = loadWatchlist();
+  list.unshift(entry);
+  saveWatchlist(list);
+  renderWatchlist();
+
+  // Close modal with feedback
+  document.getElementById('wl-modal-overlay').style.display = 'none';
+  _pendingSaveType = null;
+
+  // Brief feedback on the originating button
+  const btnId = type === 'stock' ? 'add-watchlist-btn' : null;
+  if (btnId) {
+    const btn = document.getElementById(btnId);
+    if (btn) { btn.textContent = '✓ Saved!'; setTimeout(() => { btn.textContent = '★ Save to Watchlist'; }, 2000); }
+  }
+}
+
+function renameWatchlistEntry(id, currentName) {
+  const display = document.getElementById(`wl-name-display-${id}`);
+  const input   = document.getElementById(`wl-name-input-${id}`);
+  if (!display || !input) return;
+  display.style.display = 'none';
+  input.style.display = 'block';
+  input.value = currentName;
+  input.focus();
+  input.select();
+  const finish = () => {
+    const newName = input.value.trim() || currentName;
+    const list = loadWatchlist();
+    const entry = list.find(e => e.id === id);
+    if (entry) { entry.name = newName; saveWatchlist(list); }
+    display.textContent = newName;
+    display.style.display = 'inline-block';
+    input.style.display = 'none';
+  };
+  input.onblur = finish;
+  input.onkeydown = e => { if (e.key === 'Enter') input.blur(); if (e.key === 'Escape') { input.value = currentName; input.blur(); } };
+}
+
+function removeFromWatchlist(id, e) {
+  e.stopPropagation();
+  const list = loadWatchlist().filter(entry => entry.id !== id);
+  saveWatchlist(list);
+  renderWatchlist();
+}
+
+function clearWatchlist() {
+  if (!confirm('Clear entire watchlist?')) return;
+  saveWatchlist([]);
+  renderWatchlist();
+}
+
+function setWlFilter(filter, btn) {
+  wlFilter = filter;
+  document.querySelectorAll('.wl-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWatchlist();
+}
+
+function loadFromWatchlist(id) {
+  const entry = loadWatchlist().find(e => e.id === id);
+  if (!entry) return;
+
+  const { type, inputs } = entry;
+  const ids = ASSET_INPUT_IDS[type] || [];
+
+  ids.forEach(inputId => {
+    const el = document.getElementById(inputId);
+    if (el && inputs[inputId] !== undefined) {
+      el.value = inputs[inputId];
+      // Trigger input event for sliders so their display labels update
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+
+  // For stocks: restore ticker label
+  if (type === 'stock' && entry.snapshot.ticker) {
+    document.getElementById('ticker-input').value = entry.snapshot.ticker;
+    if (entry.snapshot.company) {
+      document.getElementById('ticker-company-name').textContent = entry.snapshot.company;
+      document.getElementById('ticker-company-info').style.display = 'block';
+    }
+    document.getElementById('ticker-fields-preview').style.display = 'flex';
+  }
+
+  // Switch to the correct tab
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const tabBtn = document.querySelector(`.tab-btn[data-tab="${type}"]`);
+  const panel  = document.getElementById(`panel-${type}`);
+  if (tabBtn) tabBtn.classList.add('active');
+  if (panel)  panel.classList.add('active');
+  document.body.className = `tab-${type}`;
+
+  // Recalculate
+  if (type === 'stock')  calcStock();
+  if (type === 'bond')   calcBond();
+  if (type === 'real')   calcReal();
+  if (type === 'crypto') calcCrypto();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderWatchlistCard(entry) {
+  const { id, type, name, snapshot, savedAt } = entry;
+  const date = new Date(savedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const accentClass = `wl-card-accent-${type}`;
+  const typeBadge = `<span class="wl-card-type-badge wl-type-${type}">${ASSET_LABELS[type]}</span>`;
+
+  // Build metric chips per type
+  let metrics = '';
+  let mainValue = '', mainLabel = '', upside = null, upsideCls = '';
+
+  if (type === 'stock') {
+    const price  = parseFloat(snapshot.price) || 0;
+    const dcfVal = parseFloat((snapshot.dcfVal || '').replace(/[$,]/g, ''));
+    upside = dcfVal && price ? ((dcfVal - price) / price * 100) : null;
+    upsideCls = upside === null ? '' : upside >= 0 ? 'upside-pos' : 'upside-neg';
+    mainValue = price ? '$' + price.toFixed(2) : '—';
+    mainLabel = snapshot.ticker || 'Stock';
+    metrics = `
+      <div class="wl-metric"><div class="wl-metric-label">DCF</div><div class="wl-metric-value ${dcfVal > price ? 'pos' : 'neg'}">${snapshot.dcfVal || '—'}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">DDM</div><div class="wl-metric-value">${snapshot.ddmVal || '—'}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">P/E</div><div class="wl-metric-value">${snapshot.pe ? snapshot.pe + 'x' : '—'}</div></div>`;
+  } else if (type === 'bond') {
+    mainValue = snapshot.ytm || '—';
+    mainLabel = `${snapshot.coupon || '?'}% · ${snapshot.years || '?'}yr`;
+    metrics = `
+      <div class="wl-metric"><div class="wl-metric-label">Price</div><div class="wl-metric-value">$${parseFloat(snapshot.price||0).toFixed(0)}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">YTM</div><div class="wl-metric-value">${snapshot.ytm || '—'}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">Duration</div><div class="wl-metric-value">${snapshot.dur || '—'}</div></div>`;
+  } else if (type === 'real') {
+    mainValue = snapshot.capRate || '—';
+    mainLabel = snapshot.propPrice ? '$' + parseInt(snapshot.propPrice).toLocaleString() : 'Property';
+    metrics = `
+      <div class="wl-metric"><div class="wl-metric-label">Cap Rate</div><div class="wl-metric-value">${snapshot.capRate || '—'}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">CoC Return</div><div class="wl-metric-value">${snapshot.coc || '—'}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">Monthly CF</div><div class="wl-metric-value">${snapshot.monthlyCF || '—'}</div></div>`;
+  } else if (type === 'crypto') {
+    mainValue = snapshot.cagr || '—';
+    mainLabel = snapshot.coin || 'Crypto';
+    metrics = `
+      <div class="wl-metric"><div class="wl-metric-label">Entry</div><div class="wl-metric-value">$${parseFloat(snapshot.price||0).toLocaleString()}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">CAGR</div><div class="wl-metric-value">${snapshot.cagr || '—'}</div></div>
+      <div class="wl-metric"><div class="wl-metric-label">Sharpe</div><div class="wl-metric-value">${snapshot.sharpe || '—'}</div></div>`;
+  }
+
+  return `
+  <div class="watchlist-card ${accentClass}" onclick="loadFromWatchlist('${id}')">
+    <div class="wl-card-header">
+      <div style="flex:1;min-width:0">
+        ${typeBadge}
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span class="wl-name-display" id="wl-name-display-${id}"
+            onclick="event.stopPropagation();renameWatchlistEntry('${id}','${name.replace(/'/g,"\\'")}')">
+            ${name}
+          </span>
+        </div>
+        <input class="wl-name-input" id="wl-name-input-${id}" onclick="event.stopPropagation()" value="${name.replace(/"/g,'&quot;')}">
+        <div class="wl-company">${mainLabel}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="wl-price">${mainValue}</div>
+        ${upside !== null ? `<div class="wl-upside ${upsideCls}">${upside >= 0 ? '+' : ''}${upside.toFixed(1)}%</div>` : ''}
+        <div class="wl-date">${date}</div>
+      </div>
+    </div>
+    <div class="wl-metrics">${metrics}</div>
+    <div class="wl-card-footer">
+      <span class="wl-load-btn">↩ LOAD</span>
+      <span style="font-size:9px;color:var(--muted);letter-spacing:0.3px">Click name to rename</span>
+      <button class="wl-delete-btn" onclick="removeFromWatchlist('${id}', event)">✕ Remove</button>
+    </div>
+  </div>`;
+}
+
+function renderWatchlist() {
+  const all  = loadWatchlist();
+  const list = wlFilter === 'all' ? all : all.filter(e => e.type === wlFilter);
+
+  const grid      = document.getElementById('watchlist-grid');
+  const empty     = document.getElementById('watchlist-empty');
+  const clearBtn  = document.getElementById('watchlist-clear-btn');
+  const filterBar = document.getElementById('wl-filter-bar');
+  const hdrCount  = document.getElementById('watchlist-header-count');
+
+  hdrCount.textContent = all.length + ' saved';
+  clearBtn.style.display  = all.length > 0 ? 'block' : 'none';
+  filterBar.style.display = all.length > 0 ? 'flex' : 'none';
+
+  if (list.length === 0) {
+    empty.style.display = 'block';
+    grid.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = list.map(entry => renderWatchlistCard(entry)).join('');
+  updateWatchlistBadge();
+}
+
+// Init
+renderWatchlist();
+updateWatchlistBadge();
+
 
 // All stock input IDs to save with each watchlist entry
 const STOCK_INPUT_IDS = [
@@ -3455,166 +4069,6 @@ function updateWatchlistBadge() {
     badge.style.display = 'none';
   }
 }
-
-function addToWatchlist() {
-  const ticker  = (document.getElementById('ticker-input')?.value || '').toUpperCase().trim();
-  const company = document.getElementById('ticker-company-name')?.textContent || ticker;
-  if (!ticker) return;
-
-  // Capture all current input values
-  const assumptions = {};
-  STOCK_INPUT_IDS.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) assumptions[id] = el.value;
-  });
-
-  // Capture key computed metrics for the card display
-  const getMetricText = id => document.getElementById(id)?.textContent || '—';
-  const snapshot = {
-    price:    assumptions['s-price'],
-    dcfVal:   getMetricText('s-dcf-val'),
-    dcfMos:   getMetricText('s-dcf-mos'),
-    ddmVal:   getMetricText('s-ddm-val'),
-    pe:       document.getElementById('s-price').value && document.getElementById('s-eps-ttm').value
-              ? (parseFloat(document.getElementById('s-price').value) / parseFloat(document.getElementById('s-eps-ttm').value)).toFixed(1)
-              : '—',
-  };
-
-  const list = loadWatchlist();
-  // Update if already exists, otherwise add
-  const existingIdx = list.findIndex(e => e.ticker === ticker);
-  const entry = { ticker, company, assumptions, snapshot, savedAt: new Date().toISOString() };
-  if (existingIdx >= 0) {
-    list[existingIdx] = entry;
-  } else {
-    list.unshift(entry); // newest first
-  }
-  saveWatchlist(list);
-
-  // Button feedback
-  const btn = document.getElementById('add-watchlist-btn');
-  btn.textContent = '✓ Saved!';
-  btn.classList.add('saved');
-  setTimeout(() => {
-    btn.textContent = '★ Add to Watchlist';
-    btn.classList.remove('saved');
-  }, 2000);
-
-  renderWatchlist();
-}
-
-function removeFromWatchlist(ticker, e) {
-  e.stopPropagation(); // don't trigger card click
-  const list = loadWatchlist().filter(e => e.ticker !== ticker);
-  saveWatchlist(list);
-  renderWatchlist();
-}
-
-function clearWatchlist() {
-  if (!confirm('Clear entire watchlist?')) return;
-  saveWatchlist([]);
-  renderWatchlist();
-}
-
-function loadFromWatchlist(ticker) {
-  const entry = loadWatchlist().find(e => e.ticker === ticker);
-  if (!entry) return;
-
-  // Restore all inputs
-  STOCK_INPUT_IDS.forEach(id => {
-    const el = document.getElementById(id);
-    if (el && entry.assumptions[id] !== undefined) el.value = entry.assumptions[id];
-  });
-
-  // Set ticker input and company name
-  document.getElementById('ticker-input').value = entry.ticker;
-  if (entry.company) {
-    document.getElementById('ticker-company-name').textContent = entry.company;
-    document.getElementById('ticker-company-info').style.display = 'block';
-  }
-  document.getElementById('ticker-fields-preview').style.display = 'flex';
-  document.getElementById('add-watchlist-btn').textContent = '★ Add to Watchlist';
-
-  // Recalculate
-  calcStock();
-
-  // Switch to stock tab
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('.tab-btn[data-tab="stock"]').classList.add('active');
-  document.getElementById('panel-stock').classList.add('active');
-  document.body.className = 'tab-stock';
-
-  // Scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function renderWatchlist() {
-  const list = loadWatchlist();
-  const grid  = document.getElementById('watchlist-grid');
-  const empty = document.getElementById('watchlist-empty');
-  const clearBtn = document.getElementById('watchlist-clear-btn');
-  const headerCount = document.getElementById('watchlist-header-count');
-
-  headerCount.textContent = list.length + ' stock' + (list.length !== 1 ? 's' : '');
-  clearBtn.style.display = list.length > 0 ? 'block' : 'none';
-
-  if (list.length === 0) {
-    empty.style.display = 'block';
-    grid.innerHTML = '';
-    return;
-  }
-  empty.style.display = 'none';
-
-  grid.innerHTML = list.map(entry => {
-    const { ticker, company, snapshot, savedAt } = entry;
-    const price = parseFloat(snapshot.price) || 0;
-    const dcfVal = parseFloat((snapshot.dcfVal || '').replace(/[$,]/g,''));
-    const upside = dcfVal && price ? ((dcfVal - price) / price * 100) : null;
-    const upsideClass = upside === null ? '' : upside >= 0 ? 'up' : 'down';
-    const upsideStr = upside !== null ? (upside >= 0 ? '+' : '') + upside.toFixed(1) + '%' : '—';
-    const date = new Date(savedAt).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-
-    return `
-    <div class="watchlist-card" onclick="loadFromWatchlist('${ticker}')">
-      <div class="wl-card-header">
-        <div>
-          <div class="wl-ticker">${ticker}</div>
-          <div class="wl-company">${company}</div>
-        </div>
-        <div class="wl-date">Saved ${date}</div>
-      </div>
-      <div class="wl-price-row">
-        <div class="wl-price">$${parseFloat(price).toFixed(2)}</div>
-        ${upside !== null ? `<div class="wl-upside ${upsideClass}">${upsideStr} DCF</div>` : ''}
-      </div>
-      <div class="wl-metrics">
-        <div class="wl-metric">
-          <div class="wl-metric-label">DCF Value</div>
-          <div class="wl-metric-value ${dcfVal > price ? 'pos' : 'neg'}">${snapshot.dcfVal || '—'}</div>
-        </div>
-        <div class="wl-metric">
-          <div class="wl-metric-label">DDM Value</div>
-          <div class="wl-metric-value">${snapshot.ddmVal || '—'}</div>
-        </div>
-        <div class="wl-metric">
-          <div class="wl-metric-label">P/E Ratio</div>
-          <div class="wl-metric-value">${snapshot.pe || '—'}x</div>
-        </div>
-      </div>
-      <div class="wl-card-footer">
-        <span class="wl-load-btn">↩ LOAD ANALYSIS</span>
-        <button class="wl-delete-btn" onclick="removeFromWatchlist('${ticker}', event)">✕ Remove</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  updateWatchlistBadge();
-}
-
-// Init watchlist on load
-renderWatchlist();
-updateWatchlistBadge();
 
 function wireInputs(ids, fn) {
   ids.forEach(id => {
