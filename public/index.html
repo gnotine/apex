@@ -2503,13 +2503,11 @@ async function loadTickerData(symbol) {
   document.getElementById('ticker-company-info').style.display = 'none';
 
   try {
-    const [quote, profile, financials, metrics, cfData, icData] = await Promise.all([
+    const [quote, profile, financials, metrics] = await Promise.all([
       proxyFetch('/quote',                      { symbol }),
       proxyFetch('/stock/profile2',             { symbol }),
       proxyFetch('/stock/financials-reported',  { symbol, freq: 'annual' }),
       proxyFetch('/stock/metric',               { symbol, metric: 'all' }),
-      proxyFetch('/stock/financials',           { symbol, statement: 'cf', freq: 'ttm' }),
-      proxyFetch('/stock/financials',           { symbol, statement: 'ic', freq: 'ttm' }),
     ]);
 
     if (!profile || !profile.name) throw new Error(`Ticker "${symbol}" not found.`);
@@ -2526,64 +2524,59 @@ async function loadTickerData(symbol) {
     const shares = profile.shareOutstanding ?? null; // already in millions
     const beta   = m['beta'] ?? profile.beta ?? null;
 
-    // ── FCF/share from standardized cash flow statement (TTM) ──────────────────
-    // Finnhub /stock/financials cf TTM: data[0].report contains line items
-    let fcfps = null;
-    try {
-      const cfReport = cfData?.data?.[0]?.report || {};
-      // Operating cash flow
-      const cfo = cfReport['operatingCashFlow'] ?? cfReport['netCashProvidedByOperatingActivities'] ?? null;
-      // CapEx (usually negative, so we add it)
-      const capex = cfReport['capitalExpenditures'] ?? cfReport['purchasesOfPropertyPlantAndEquipment'] ?? null;
-      if (cfo !== null && shares) {
-        const fcfTotal = capex !== null ? cfo + capex : cfo; // capex is already negative
-        fcfps = fcfTotal / (shares * 1e6);
-      }
-    } catch(e) { fcfps = null; }
-
-    // ── EBITDA/share from standardized income statement (TTM) ──────────────────
-    let ebitdaPS = null;
-    try {
-      const icReport = icData?.data?.[0]?.report || {};
-      const ebit    = icReport['ebit'] ?? icReport['operatingIncome'] ?? null;
-      const da      = icReport['depreciationAndAmortization'] ?? icReport['depreciationDepletionAndAmortization'] ?? null;
-      if (ebit !== null && da !== null && shares) {
-        ebitdaPS = (ebit + Math.abs(da)) / (shares * 1e6);
-      } else if (ebit !== null && shares) {
-        // Approximate D&A from metric object or 15% of EBIT
-        const daTTM = m['ebitdaTTM'] && m['ebitTTM'] ? (m['ebitdaTTM'] - m['ebitTTM']) : null;
-        ebitdaPS = daTTM ? (ebit + daTTM) / (shares * 1e6) : ebit / (shares * 1e6) / 0.85;
-      }
-    } catch(e) { ebitdaPS = null; }
-
-    // Extract debt & cash from reported balance sheet (financials-reported)
+    // ── Parse as-reported SEC filing (financials-reported, annual) ─────────────
+    // report.bs = balance sheet, report.cf = cash flow, report.ic = income stmt
+    // Each is an array of { concept: "us-gaap:...", value: number, unit, label }
     let totalDebt = null, cashAmt = null;
+    let fcfps = null, ebitdaPS = null, daPS = null;
+
     const reports = financials?.data;
     if (reports && reports.length > 0) {
-      const bs = reports[0]?.report?.bs || [];
-      const findConcept = (arr, ...labels) => {
-        for (const label of labels) {
-          const found = arr.find(x =>
-            x.concept && x.concept.toLowerCase().includes(label.toLowerCase())
-          );
-          if (found && found.value) return found.value;
+      const rpt = reports[0]?.report || {};
+      const bs  = rpt.bs || [];
+      const cf  = rpt.cf || [];
+      const ic  = rpt.ic || [];
+
+      // Helper: search concept names (XBRL us-gaap tag, case-insensitive partial match)
+      const findVal = (arr, ...keys) => {
+        for (const key of keys) {
+          const k = key.toLowerCase();
+          const hit = arr.find(x => x.concept && x.concept.toLowerCase().includes(k) && x.value != null);
+          if (hit) return hit.value;
         }
         return null;
       };
-      const rawDebt = findConcept(bs, 'LongTermDebt', 'LongTermDebtAndCapitalLeaseObligation');
-      const rawCash = findConcept(bs, 'CashAndCashEquivalentsAtCarryingValue', 'CashCashEquivalents');
+
+      // Balance sheet
+      const rawDebt = findVal(bs, 'longtermdebt', 'longtermdebtnoncurrent', 'longtermborrowing');
+      const rawCash = findVal(bs, 'cashandcashequivalentsatcarryingvalue', 'cashandcashequivalents', 'cash');
       if (rawDebt) totalDebt = rawDebt / 1e6;
       if (rawCash) cashAmt   = rawCash / 1e6;
-    }
 
-    // D&A per share from metric fallback
-    const ebitdaRaw = m['ebitdaTTM'] ?? null;
-    const ebitRaw   = m['ebitTTM']   ?? null;
-    let daPS = null;
-    if (ebitdaRaw && ebitRaw && shares) {
-      daPS = (ebitdaRaw - ebitRaw) / (shares * 1e6);
-    } else if (ebitdaPS) {
-      daPS = ebitdaPS * 0.15;
+      // Cash flow → FCF = operating CF + capex (capex is reported negative)
+      const cfo   = findVal(cf, 'netcashprovidedbyoperatingactivities', 'operatingactivities');
+      const capex = findVal(cf, 'paymentstoacquirepropertyplantandequipment', 'purchasesofpropertyplantandequipment', 'capitalexpenditures');
+      if (cfo != null && shares) {
+        // capex from SEC filings is negative; if somehow positive, negate it
+        const capexAdj = capex != null ? (capex > 0 ? -capex : capex) : 0;
+        fcfps = (cfo + capexAdj) / (shares * 1e6);
+      }
+
+      // Income statement → EBITDA = operating income + D&A
+      const opincome = findVal(ic, 'operatingincomeloss', 'operatingincome', 'incomefromoperations');
+      const da       = findVal(cf, 'depreciationdepletionandamortization', 'depreciationandamortization', 'depreciation');
+      if (opincome != null && da != null && shares) {
+        ebitdaPS = (opincome + Math.abs(da)) / (shares * 1e6);
+        daPS = Math.abs(da) / (shares * 1e6);
+      } else if (opincome != null && shares) {
+        // Fallback: estimate D&A from metric object (ebitdaTTM - ebitTTM)
+        const ebitdaTotal = m['ebitdaTTM'] ?? null;
+        const ebitTotal   = m['ebitTTM']   ?? null;
+        if (ebitdaTotal && ebitTotal) {
+          ebitdaPS = ebitdaTotal / (shares * 1e6);
+          daPS     = (ebitdaTotal - ebitTotal) / (shares * 1e6);
+        }
+      }
     }
 
     // Populate model inputs
