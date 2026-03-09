@@ -1,12 +1,9 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/finnhub/:path*", "destination": "/api/finnhub.js" },
-    { "source": "/app",                "destination": "/public/app.html" }
-  ],
   "routes": [
-    { "src": "/api/mortgage", "dest": "/api/mortgage.js" },
-    { "src": "/(.*)",         "dest": "/public/$1" }
+    { "src": "/api/finnhub(.*)", "dest": "/api/finnhub.js" },
+    { "src": "/api/mortgage",    "dest": "/api/mortgage.js" },
+    { "src": "/(.*)",            "dest": "/public/$1" }
   ],
   "headers": [
     {
