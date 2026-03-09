@@ -786,10 +786,7 @@
     gap: 10px;
     align-items: flex-start;
   }
-  .cmp-search-wrap {
-    flex: 1;
-    position: relative;
-  }
+  .cmp-search-wrap { flex: 1; position: relative; }
   .cmp-input {
     width: 100%;
     background: var(--surface2);
@@ -823,118 +820,139 @@
   .cmp-add-btn:hover { opacity: 0.85; }
   .cmp-add-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .cmp-slots {
-    display: flex;
+  /* Stock cards row */
+  .cmp-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 16px;
-    flex-wrap: wrap;
+    align-items: start;
   }
-  .cmp-slot { flex: 1; min-width: 200px; }
 
   .cmp-stock-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
   }
-  .cmp-stock-card.best-value {
-    border-color: var(--accent-stock);
-    box-shadow: 0 0 0 1px var(--accent-stock)40, 0 4px 20px var(--accent-stock)10;
-  }
-  .cmp-stock-card.best-value::before {
-    content: '★ BEST VALUE';
-    position: absolute;
-    top: -10px;
-    left: 16px;
-    background: var(--accent-stock);
-    color: var(--bg);
-    font-size: 9px;
-    font-weight: 700;
-    font-family: 'Syne', sans-serif;
-    padding: 2px 8px;
-    border-radius: 6px;
-    letter-spacing: 0.5px;
-  }
-  .cmp-stock-header {
+  .cmp-stock-card.best-value { border-color: var(--accent-stock); box-shadow: 0 0 0 1px var(--accent-stock)30; }
+
+  .cmp-card-header {
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    gap: 8px;
   }
-  .cmp-stock-ticker { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; }
-  .cmp-stock-name   { font-size: 10px; color: var(--muted); margin-top: 2px; }
-  .cmp-stock-price  { font-family: 'DM Serif Display', serif; font-size: 20px; }
-  .cmp-remove-btn   {
-    position: absolute; top: 12px; right: 12px;
+  .cmp-card-header.best-value-header {
+    background: linear-gradient(135deg, var(--accent-stock)10, transparent);
+  }
+  .cmp-ticker-block { flex: 1; min-width: 0; }
+  .cmp-ticker-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .cmp-ticker { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+  .cmp-best-badge {
+    font-size: 8px; font-weight: 700; font-family: 'Syne', sans-serif;
+    background: var(--accent-stock); color: var(--bg);
+    padding: 2px 7px; border-radius: 5px; letter-spacing: 0.5px;
+  }
+  .cmp-name     { font-size: 10px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+  .cmp-industry { font-size: 9px; color: var(--muted); margin-top: 1px; opacity: 0.7; }
+  .cmp-price-block { text-align: right; flex-shrink: 0; }
+  .cmp-price    { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .cmp-upside   { font-size: 11px; font-weight: 600; margin-top: 2px; }
+  .cmp-upside.pos { color: var(--positive); }
+  .cmp-upside.neg { color: var(--negative); }
+  .cmp-remove-btn {
     background: none; border: none; color: var(--muted);
-    cursor: pointer; font-size: 14px; padding: 2px 6px;
-    border-radius: 6px; transition: all 0.15s;
+    cursor: pointer; font-size: 13px; padding: 2px 5px;
+    border-radius: 5px; transition: all 0.15s; flex-shrink: 0;
   }
   .cmp-remove-btn:hover { color: var(--negative); background: var(--negative)10; }
 
-  .cmp-loading-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px 18px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Assumption sliders inside card */
+  .cmp-assumptions {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cmp-assumptions-title {
+    font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--accent-bond); font-weight: 700; font-family: 'Syne', sans-serif;
+    margin-bottom: 10px;
+  }
+  .cmp-slider-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
+  }
+  .cmp-slider-group { display: flex; flex-direction: column; gap: 4px; }
+  .cmp-slider-label {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 9px; color: var(--muted); letter-spacing: 0.3px;
+  }
+  .cmp-slider-val { color: var(--accent-bond); font-weight: 600; }
+  .cmp-slider {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 3px;
+    background: var(--border2); border-radius: 2px; outline: none;
+    cursor: pointer;
+  }
+  .cmp-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent-bond); cursor: pointer;
+  }
+
+  /* Model results mini strip */
+  .cmp-model-results {
+    padding: 12px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .cmp-model-item { background: var(--surface2); border-radius: 8px; padding: 8px 10px; }
+  .cmp-model-label { font-size: 8px; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 3px; }
+  .cmp-model-val   { font-size: 13px; font-weight: 500; }
+  .cmp-model-val.pos { color: var(--positive); }
+  .cmp-model-val.neg { color: var(--negative); }
+
+  .cmp-loading-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px 18px;
+    text-align: center; color: var(--muted); font-size: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
   }
 
   /* Comparison table */
   .cmp-table-wrap { overflow-x: auto; }
-  .cmp-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
   .cmp-table th, .cmp-table td {
-    padding: 10px 16px;
-    text-align: right;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
+    padding: 9px 18px; text-align: right;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
   }
-  .cmp-table th:first-child,
-  .cmp-table td:first-child { text-align: left; color: var(--muted); font-size: 11px; letter-spacing: 0.3px; }
+  .cmp-table th:first-child, .cmp-table td:first-child {
+    text-align: left; color: var(--muted); font-size: 11px;
+  }
   .cmp-table thead th {
-    background: var(--surface2);
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--text);
-    letter-spacing: 0.3px;
+    background: var(--surface2); font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 13px; color: var(--text);
     border-bottom: 2px solid var(--border2);
+    position: sticky; top: 0;
   }
-  .cmp-table thead th:first-child { color: var(--muted); font-size: 11px; font-weight: 400; }
+  .cmp-table thead th:first-child { color: var(--muted); font-size: 10px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.5px; }
   .cmp-table tbody tr:hover td { background: var(--surface2); }
   .cmp-table .section-row td {
-    background: var(--surface2);
-    color: var(--accent-bond);
-    font-family: 'Syne', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    border-bottom: 1px solid var(--border2);
+    background: var(--surface2); color: var(--accent-bond);
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    padding: 5px 18px; border-bottom: 1px solid var(--border2);
   }
-  .cmp-table .best-col { color: var(--positive) !important; font-weight: 600; }
+  .cmp-table .best-col  { color: var(--positive) !important; font-weight: 600; }
   .cmp-table .worst-col { color: var(--negative) !important; }
   .cmp-table .upside-pos { color: var(--positive); font-weight: 600; }
   .cmp-table .upside-neg { color: var(--negative); }
-  .cmp-table .winner-header { position: relative; }
-  .cmp-table .winner-header::after {
-    content: '★';
-    display: block;
-    font-size: 9px;
-    color: var(--accent-stock);
-    margin-top: 2px;
-  }
+  .cmp-table .best-header-col { color: var(--accent-stock) !important; }
+  .cmp-table .best-header-col::after { content: ' ★'; font-size: 10px; }
 
   /* ── Watchlist ─────────────────────────────────────────────── */
   .watchlist-count-badge {
@@ -1804,18 +1822,18 @@
   <!-- COMPARE -->
   <div id="panel-compare" class="tab-panel">
 
-    <!-- Header + search row -->
+    <!-- Header + search -->
     <div class="card card-full cmp-header-card">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
         <div>
           <div class="card-title" style="margin-bottom:4px">⇄ Multi-Stock Comparison <span class="badge" style="background:var(--accent-bond)20;color:var(--accent-bond);border-color:var(--accent-bond)40">Up to 3 stocks</span></div>
-          <div style="font-size:11px;color:var(--muted)">Compare live fundamentals and all valuation model outputs side by side.</div>
+          <div style="font-size:11px;color:var(--muted)">Compare live fundamentals side by side. Adjust each stock's valuation assumptions independently.</div>
         </div>
         <button onclick="clearCompare()" class="watchlist-clear-btn" id="cmp-clear-btn" style="display:none">✕ Clear All</button>
       </div>
       <div class="cmp-search-row">
         <div class="cmp-search-wrap">
-          <input type="text" id="cmp-input" class="cmp-input" placeholder="Enter ticker (e.g. AAPL)" maxlength="10" autocomplete="off">
+          <input type="text" id="cmp-input" class="cmp-input" placeholder="Search ticker to add (e.g. AAPL, MSFT, NVDA)" maxlength="10" autocomplete="off">
           <div id="cmp-suggestions" class="ticker-suggestions"></div>
         </div>
         <button id="cmp-add-btn" class="cmp-add-btn" onclick="cmpAddTicker()">
@@ -1830,21 +1848,18 @@
     <div id="cmp-empty" class="watchlist-empty">
       <div class="watchlist-empty-icon">⇄</div>
       <div class="watchlist-empty-title">No stocks added yet</div>
-      <div class="watchlist-empty-sub">Search a ticker above and click "Add Stock" to begin comparing. Add up to 3 stocks.</div>
+      <div class="watchlist-empty-sub">Search a ticker above and click "Add Stock" to begin. Add up to 3 stocks.</div>
     </div>
 
-    <!-- Stock slot cards (shown when stocks added) -->
-    <div id="cmp-slots" class="cmp-slots" style="display:none">
-      <div id="cmp-slot-0" class="cmp-slot"></div>
-      <div id="cmp-slot-1" class="cmp-slot"></div>
-      <div id="cmp-slot-2" class="cmp-slot"></div>
-    </div>
+    <!-- Stock cards grid — each card has its own assumption controls -->
+    <div id="cmp-cards" class="cmp-cards" style="display:none"></div>
 
-    <!-- Comparison table + chart (shown when 2+ stocks) -->
+    <!-- Comparison table (shown when 2+ stocks) -->
     <div id="cmp-results" style="display:none">
       <div class="card card-full" style="padding:0;overflow:hidden">
-        <div style="padding:20px 24px 16px;border-bottom:1px solid var(--border)">
-          <div class="card-title">Side-by-Side Comparison</div>
+        <div style="padding:18px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <div class="card-title">Side-by-Side Analysis</div>
+          <div style="font-size:10px;color:var(--muted)">Green = best · Red = worst</div>
         </div>
         <div class="cmp-table-wrap">
           <table id="cmp-table" class="cmp-table"></table>
@@ -1852,7 +1867,7 @@
       </div>
       <div class="card card-full">
         <div class="card-title" style="margin-bottom:16px">Fair Value vs Current Price</div>
-        <div style="position:relative;height:300px">
+        <div style="position:relative;height:320px">
           <canvas id="cmp-chart"></canvas>
         </div>
       </div>
@@ -2962,10 +2977,13 @@ document.getElementById('share-btn').addEventListener('click', () => {
 
 // ─── COMPARE ─────────────────────────────────────────────────────
 
-let cmpStocks   = [];   // array of fetched stock data objects (max 3)
-let cmpChart    = null;
+let cmpStocks = [];  // array of stock data objects (max 3)
+let cmpChart  = null;
 
-// Autocomplete for compare input
+// Per-stock assumption defaults — each stock gets its own copy
+const CMP_DEFAULTS = { wacc: 9, fcfG1: 8, fcfG2: 4, tg: 3, targetPE: 17 };
+
+// Autocomplete
 let cmpSearchTimeout = null;
 document.getElementById('cmp-input').addEventListener('input', function() {
   const q = this.value.trim().toUpperCase();
@@ -2998,18 +3016,13 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.cmp-search-wrap'))
     document.getElementById('cmp-suggestions').style.display = 'none';
 });
-
 document.getElementById('cmp-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    document.getElementById('cmp-suggestions').style.display = 'none';
-    cmpAddTicker();
-  }
+  if (e.key === 'Enter') { document.getElementById('cmp-suggestions').style.display = 'none'; cmpAddTicker(); }
 });
 
 function setCmpStatus(msg, type) {
   const el = document.getElementById('cmp-status');
-  el.textContent = msg;
-  el.className = 'ticker-status ' + type;
+  el.textContent = msg; el.className = 'ticker-status ' + type;
   el.style.display = msg ? 'block' : 'none';
 }
 
@@ -3022,11 +3035,10 @@ async function cmpFetchStock(symbol) {
   ]);
   if (!profile || !profile.name) throw new Error(`"${symbol}" not found.`);
 
-  const m      = metrics.metric || {};
+  const m = metrics.metric || {};
   const price  = quote.c;
   const shares = profile.shareOutstanding ?? null;
 
-  // Fundamentals from metric
   const eps      = m['epsTTM'] ?? m['epsBasicExclExtraItemsTTM'] ?? null;
   const divYield = m['dividendYieldIndicatedAnnual'] ?? null;
   const divAnn   = (divYield && price) ? (divYield / 100) * price : (m['dividendsPerShareAnnual'] ?? 0);
@@ -3036,11 +3048,9 @@ async function cmpFetchStock(symbol) {
   const pbRatio  = (price && bvps && bvps > 0) ? price / bvps : null;
   const roe      = m['roeTTM'] ?? null;
   const roic     = m['roicTTM'] ?? null;
-  const debtEq   = m['totalDebt/totalEquityAnnual'] ?? m['totalDebtToEquityAnnual'] ?? null;
   const grossMgn = m['grossMarginTTM'] ?? null;
   const netMgn   = m['netProfitMarginTTM'] ?? null;
 
-  // Parse as-reported financials
   let totalDebt = null, cashAmt = null, fcfps = null, ebitdaPS = null;
   const reports = financials?.data;
   if (reports && reports.length > 0) {
@@ -3058,14 +3068,12 @@ async function cmpFetchStock(symbol) {
     const rawCash = findVal(bs, 'cashandcashequivalentsatcarryingvalue', 'cashandcashequivalents', 'cash');
     if (rawDebt) totalDebt = rawDebt / 1e6;
     if (rawCash) cashAmt   = rawCash / 1e6;
-
     const cfo   = findVal(cf, 'netcashprovidedbyoperatingactivities', 'operatingactivities');
     const capex = findVal(cf, 'paymentstoacquirepropertyplantandequipment', 'purchasesofpropertyplantandequipment');
     if (cfo != null && shares) {
       const capexAdj = capex != null ? (capex > 0 ? -capex : capex) : 0;
       fcfps = (cfo + capexAdj) / (shares * 1e6);
     }
-
     const opincome = findVal(ic, 'operatingincomeloss', 'operatingincome');
     const da       = findVal(cf, 'depreciationdepletionandamortization', 'depreciationandamortization', 'depreciation');
     if (opincome != null && da != null && shares) {
@@ -3075,106 +3083,82 @@ async function cmpFetchStock(symbol) {
     }
   }
 
-  // ── Run all valuation models ──────────────────────────────────
-  const ror  = 0.09, rf = 0.044, holdYrs = 10;
-  const wacc = rf + (beta || 1.0) * 0.05;
-
-  // DDM
-  let ddmVal = null;
-  if (divAnn > 0) {
-    const g1 = 0.06, tg = 0.03, phase = 5;
-    let pv = 0, d = divAnn;
-    for (let i = 1; i <= phase; i++) { d *= (1 + g1); pv += d / Math.pow(1 + ror, i); }
-    const tv = (d * (1 + tg)) / (ror - tg);
-    ddmVal = pv + tv / Math.pow(1 + ror, phase);
-  }
-
-  // DCF
-  let dcfVal = null;
-  if (fcfps && fcfps > 0) {
-    const g1 = 0.08, g2 = 0.04, tg = 0.03, phase = 5;
-    let pv = 0, fcf = fcfps;
-    for (let i = 1; i <= phase; i++) { fcf *= (1 + g1); pv += fcf / Math.pow(1 + wacc, i); }
-    for (let i = phase + 1; i <= holdYrs; i++) { fcf *= (1 + g2); pv += fcf / Math.pow(1 + wacc, i); }
-    const tv = (fcf * (1 + tg)) / (wacc - tg);
-    dcfVal = pv + tv / Math.pow(1 + wacc, holdYrs);
-  }
-
-  // Graham Number
-  let grahamVal = null;
-  if (eps && eps > 0 && bvps && bvps > 0) {
-    grahamVal = Math.sqrt(22.5 * eps * bvps);
-  }
-
-  // Graham Formula
-  let grahamFormula = null;
-  if (eps && eps > 0) {
-    const g = 0.07;
-    grahamFormula = (eps * (8.5 + 2 * g * 100) * 4.4) / (m['currentRatioAnnual'] ?? 4.4) ;
-    // Simplified: eps * (8.5 + 2*g) — using standard form
-    grahamFormula = eps * (8.5 + 2 * 7) * 4.4 / 4.4;
-  }
-
-  // Multiples fair value (using sector median P/E of ~17 as target)
-  let multiplesVal = null;
-  if (eps && eps > 0) multiplesVal = eps * 17;
-
   return {
     symbol, name: profile.name, exchange: profile.exchange,
     industry: profile.finnhubIndustry,
     price, eps, divAnn, bvps, fcfps, ebitdaPS,
     shares, beta, totalDebt, cashAmt,
-    peRatio, pbRatio, roe, roic, debtEq, grossMgn, netMgn,
-    ddmVal, dcfVal, grahamVal, grahamFormula, multiplesVal, wacc,
+    peRatio, pbRatio, roe, roic, grossMgn, netMgn,
+    // Each stock stores its own live assumptions
+    assumptions: { ...CMP_DEFAULTS },
   };
+}
+
+// Compute valuation models from a stock + its current assumptions
+function cmpCalcModels(s) {
+  const { wacc, fcfG1, fcfG2, tg, targetPE } = s.assumptions;
+  const w = wacc / 100, g1 = fcfG1 / 100, g2 = fcfG2 / 100, tgR = tg / 100;
+  const ror = 0.09;
+
+  // DCF
+  let dcfVal = null;
+  if (s.fcfps && s.fcfps > 0) {
+    let pv = 0, fcf = s.fcfps;
+    for (let i = 1; i <= 5; i++)  { fcf *= (1 + g1); pv += fcf / Math.pow(1 + w, i); }
+    for (let i = 6; i <= 10; i++) { fcf *= (1 + g2); pv += fcf / Math.pow(1 + w, i); }
+    const tv = (fcf * (1 + tgR)) / (w - tgR);
+    dcfVal = pv + tv / Math.pow(1 + w, 10);
+  }
+
+  // DDM
+  let ddmVal = null;
+  if (s.divAnn > 0) {
+    let pv = 0, d = s.divAnn;
+    for (let i = 1; i <= 5; i++) { d *= (1 + g1); pv += d / Math.pow(1 + ror, i); }
+    const tv = (d * (1 + tgR)) / (ror - tgR);
+    ddmVal = pv + tv / Math.pow(1 + ror, 5);
+  }
+
+  // Graham Number
+  let grahamVal = null;
+  if (s.eps && s.eps > 0 && s.bvps && s.bvps > 0)
+    grahamVal = Math.sqrt(22.5 * s.eps * s.bvps);
+
+  // P/E Fair Value
+  let peVal = null;
+  if (s.eps && s.eps > 0) peVal = s.eps * targetPE;
+
+  return { dcfVal, ddmVal, grahamVal, peVal };
 }
 
 async function cmpAddTicker() {
   const raw = document.getElementById('cmp-input').value.trim().toUpperCase();
   if (!raw) return;
+  if (cmpStocks.length >= 3) { setCmpStatus('Max 3 stocks. Remove one to add another.', 'error'); return; }
+  if (cmpStocks.find(s => s.symbol === raw)) { setCmpStatus(`${raw} is already added.`, 'error'); return; }
 
-  if (cmpStocks.length >= 3) {
-    setCmpStatus('Maximum 3 stocks. Remove one to add another.', 'error');
-    return;
-  }
-  if (cmpStocks.find(s => s.symbol === raw)) {
-    setCmpStatus(`${raw} is already in the comparison.`, 'error');
-    return;
-  }
-
-  // Disable button, show spinner
   const btn = document.getElementById('cmp-add-btn');
   const btnText = document.getElementById('cmp-btn-text');
   const spinner = document.getElementById('cmp-spinner');
-  btn.disabled = true;
-  btnText.style.display = 'none';
-  spinner.style.display = 'inline-block';
+  btn.disabled = true; btnText.style.display = 'none'; spinner.style.display = 'inline-block';
   setCmpStatus(`Fetching ${raw}…`, 'loading');
 
-  // Show loading slot
-  const slotIdx = cmpStocks.length;
-  const slotEl = document.getElementById(`cmp-slot-${slotIdx}`);
-  slotEl.innerHTML = `<div class="cmp-loading-card"><span class="spinner"></span> Loading ${raw}…</div>`;
-  document.getElementById('cmp-slots').style.display = 'flex';
-  document.getElementById('cmp-empty').style.display = 'none';
+  // Show a loading placeholder card immediately
+  const tempIdx = cmpStocks.length;
+  cmpStocks.push({ symbol: raw, _loading: true });
+  renderCmpCards();
 
   try {
     const stock = await cmpFetchStock(raw);
-    cmpStocks.push(stock);
+    cmpStocks[tempIdx] = stock;
     document.getElementById('cmp-input').value = '';
     setCmpStatus('', '');
-    renderCompare();
   } catch(err) {
-    slotEl.innerHTML = '';
-    if (cmpStocks.length === 0) {
-      document.getElementById('cmp-slots').style.display = 'none';
-      document.getElementById('cmp-empty').style.display = 'block';
-    }
-    setCmpStatus('Error: ' + (err.message || 'Could not load stock.'), 'error');
+    cmpStocks.splice(tempIdx, 1);
+    setCmpStatus('Error: ' + (err.message || 'Could not load.'), 'error');
   } finally {
-    btn.disabled = false;
-    btnText.style.display = 'inline';
-    spinner.style.display = 'none';
+    btn.disabled = false; btnText.style.display = 'inline'; spinner.style.display = 'none';
+    renderCompare();
   }
 }
 
@@ -3188,76 +3172,160 @@ function clearCompare() {
   renderCompare();
 }
 
+function cmpUpdateAssumption(symbol, key, value) {
+  const s = cmpStocks.find(s => s.symbol === symbol);
+  if (!s) return;
+  s.assumptions[key] = parseFloat(value);
+  // Update label
+  const labelEl = document.getElementById(`cmp-${symbol}-${key}-val`);
+  if (labelEl) labelEl.textContent = parseFloat(value).toFixed(1) + (key === 'targetPE' ? 'x' : '%');
+  // Recalculate and re-render model results for this card + the table + chart
+  renderCmpModelCard(symbol);
+  if (cmpStocks.filter(s => !s._loading).length >= 2) {
+    renderCmpTable();
+    renderCmpChart();
+  }
+}
+
+function renderCmpModelCard(symbol) {
+  const s = cmpStocks.find(s => s.symbol === symbol);
+  if (!s || s._loading) return;
+  const { dcfVal, ddmVal, grahamVal, peVal } = cmpCalcModels(s);
+  const upFmt = (val) => {
+    if (!val) return { str: 'N/A', cls: '' };
+    const pct = (val - s.price) / s.price * 100;
+    return { str: (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%  ($' + val.toFixed(0) + ')', cls: pct >= 0 ? 'pos' : 'neg' };
+  };
+  const el = document.getElementById(`cmp-models-${symbol}`);
+  if (!el) return;
+  const models = [
+    { label: 'DCF', ...upFmt(dcfVal) },
+    { label: 'DDM', ...upFmt(ddmVal) },
+    { label: 'Graham', ...upFmt(grahamVal) },
+    { label: `P/E ×${s.assumptions.targetPE}`, ...upFmt(peVal) },
+  ];
+  el.innerHTML = models.map(m =>
+    `<div class="cmp-model-item">
+      <div class="cmp-model-label">${m.label}</div>
+      <div class="cmp-model-val ${m.cls}">${m.str}</div>
+    </div>`
+  ).join('');
+  // Also update header upside (DCF)
+  const upsideEl = document.getElementById(`cmp-upside-${symbol}`);
+  if (upsideEl && dcfVal) {
+    const pct = (dcfVal - s.price) / s.price * 100;
+    upsideEl.textContent = 'DCF ' + (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+    upsideEl.className = 'cmp-upside ' + (pct >= 0 ? 'pos' : 'neg');
+  }
+}
+
+function renderCmpCards() {
+  const container = document.getElementById('cmp-cards');
+  const loaded = cmpStocks.filter(s => !s._loading);
+  const upsides = loaded.map(s => {
+    const { dcfVal } = cmpCalcModels(s);
+    return dcfVal && s.price ? (dcfVal - s.price) / s.price : -Infinity;
+  });
+  const bestSymbol = loaded.length >= 2 ? loaded[upsides.indexOf(Math.max(...upsides))]?.symbol : null;
+
+  container.innerHTML = cmpStocks.map(s => {
+    if (s._loading) return `
+      <div class="cmp-loading-card">
+        <span class="spinner"></span> Loading ${s.symbol}…
+      </div>`;
+
+    const isBest = s.symbol === bestSymbol;
+    const { dcfVal } = cmpCalcModels(s);
+    const dcfPct = dcfVal && s.price ? (dcfVal - s.price) / s.price * 100 : null;
+
+    const mk = (key, label, min, max, step, suffix) => `
+      <div class="cmp-slider-group">
+        <div class="cmp-slider-label">
+          <span>${label}</span>
+          <span class="cmp-slider-val" id="cmp-${s.symbol}-${key}-val">${s.assumptions[key].toFixed(1)}${suffix}</span>
+        </div>
+        <input type="range" class="cmp-slider" min="${min}" max="${max}" step="${step}"
+          value="${s.assumptions[key]}"
+          oninput="cmpUpdateAssumption('${s.symbol}','${key}',this.value)">
+      </div>`;
+
+    return `
+    <div class="cmp-stock-card ${isBest ? 'best-value' : ''}">
+      <div class="cmp-card-header ${isBest ? 'best-value-header' : ''}">
+        <div class="cmp-ticker-block">
+          <div class="cmp-ticker-row">
+            <span class="cmp-ticker">${s.symbol}</span>
+            ${isBest ? '<span class="cmp-best-badge">★ BEST VALUE</span>' : ''}
+          </div>
+          <div class="cmp-name">${s.name}</div>
+          <div class="cmp-industry">${s.exchange || ''} · ${s.industry || ''}</div>
+        </div>
+        <div class="cmp-price-block">
+          <div class="cmp-price">$${s.price.toFixed(2)}</div>
+          ${dcfPct !== null ? `<div class="cmp-upside ${dcfPct >= 0 ? 'pos' : 'neg'}" id="cmp-upside-${s.symbol}">DCF ${dcfPct >= 0 ? '+' : ''}${dcfPct.toFixed(1)}%</div>` : '<div id="cmp-upside-' + s.symbol + '"></div>'}
+        </div>
+        <button class="cmp-remove-btn" onclick="cmpRemove('${s.symbol}')">✕</button>
+      </div>
+
+      <div class="cmp-assumptions">
+        <div class="cmp-assumptions-title">Valuation Assumptions</div>
+        <div class="cmp-slider-row">
+          ${mk('wacc',    'WACC',         4,  20, 0.5, '%')}
+          ${mk('fcfG1',   'FCF Growth yr 1–5', 0, 40, 0.5, '%')}
+          ${mk('fcfG2',   'FCF Growth yr 6–10', 0, 25, 0.5, '%')}
+          ${mk('tg',      'Terminal Growth', 0, 6, 0.25, '%')}
+          ${mk('targetPE','Target P/E',    8,  40, 1,   'x')}
+        </div>
+      </div>
+
+      <div class="cmp-model-results" id="cmp-models-${s.symbol}"></div>
+    </div>`;
+  }).join('');
+
+  // Populate model results for each loaded stock
+  loaded.forEach(s => renderCmpModelCard(s.symbol));
+}
+
 function renderCompare() {
-  // Update clear button
   document.getElementById('cmp-clear-btn').style.display = cmpStocks.length > 0 ? 'block' : 'none';
 
-  // Empty state
   if (cmpStocks.length === 0) {
-    document.getElementById('cmp-slots').style.display = 'none';
+    document.getElementById('cmp-cards').style.display = 'none';
     document.getElementById('cmp-empty').style.display = 'block';
     document.getElementById('cmp-results').style.display = 'none';
-    for (let i = 0; i < 3; i++) document.getElementById(`cmp-slot-${i}`).innerHTML = '';
     return;
   }
 
   document.getElementById('cmp-empty').style.display = 'none';
-  document.getElementById('cmp-slots').style.display = 'flex';
+  document.getElementById('cmp-cards').style.display = 'grid';
+  renderCmpCards();
 
-  // Find best DCF upside for "best value" badge
-  const upsides = cmpStocks.map(s => s.dcfVal && s.price ? (s.dcfVal - s.price) / s.price : -Infinity);
-  const bestIdx  = upsides.indexOf(Math.max(...upsides));
-
-  // Render slot cards
-  for (let i = 0; i < 3; i++) {
-    const slotEl = document.getElementById(`cmp-slot-${i}`);
-    if (i >= cmpStocks.length) { slotEl.innerHTML = ''; continue; }
-    const s = cmpStocks[i];
-    const upside = s.dcfVal && s.price ? ((s.dcfVal - s.price) / s.price * 100) : null;
-    const upsideCls = upside === null ? '' : upside >= 0 ? 'upside-pos' : 'upside-neg';
-    const upsideStr = upside !== null ? (upside >= 0 ? '+' : '') + upside.toFixed(1) + '%' : '—';
-    const isBest = i === bestIdx && cmpStocks.length >= 2;
-
-    slotEl.innerHTML = `
-      <div class="cmp-stock-card ${isBest ? 'best-value' : ''}">
-        <button class="cmp-remove-btn" onclick="cmpRemove('${s.symbol}')">✕</button>
-        <div class="cmp-stock-header">
-          <div>
-            <div class="cmp-stock-ticker">${s.symbol}</div>
-            <div class="cmp-stock-name">${s.name}</div>
-          </div>
-          <div class="cmp-stock-price">$${s.price.toFixed(2)}</div>
-        </div>
-        <div style="font-size:10px;color:var(--muted)">${s.exchange || ''} · ${s.industry || ''}</div>
-        ${upside !== null ? `<div style="margin-top:8px;font-size:12px" class="${upsideCls}">DCF Upside: ${upsideStr}</div>` : ''}
-      </div>`;
-  }
-
-  // Only show table+chart with 2+ stocks
-  if (cmpStocks.length < 2) {
+  const loaded = cmpStocks.filter(s => !s._loading);
+  if (loaded.length >= 2) {
+    document.getElementById('cmp-results').style.display = 'block';
+    renderCmpTable();
+    renderCmpChart();
+  } else {
     document.getElementById('cmp-results').style.display = 'none';
-    return;
   }
-  document.getElementById('cmp-results').style.display = 'block';
-
-  renderCmpTable(bestIdx);
-  renderCmpChart();
 }
 
-function renderCmpTable(bestIdx) {
-  const stocks = cmpStocks;
-  const fmt  = (v, prefix='$', decimals=2) => v != null ? prefix + parseFloat(v).toFixed(decimals) : '—';
-  const fmtP = (v) => v != null ? parseFloat(v).toFixed(1) + '%' : '—';
-  const fmtX = (v) => v != null ? parseFloat(v).toFixed(2) + 'x' : '—';
+function renderCmpTable() {
+  const stocks = cmpStocks.filter(s => !s._loading);
+  if (stocks.length < 2) return;
 
-  // Upside vs current price
+  const upsides = stocks.map(s => {
+    const { dcfVal } = cmpCalcModels(s);
+    return dcfVal && s.price ? (dcfVal - s.price) / s.price : -Infinity;
+  });
+  const bestIdx = upsides.indexOf(Math.max(...upsides));
+
   const upside = (val, price) => {
     if (!val || !price) return { str: '—', cls: '' };
     const pct = (val - price) / price * 100;
     return { str: (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%', cls: pct >= 0 ? 'upside-pos' : 'upside-neg' };
   };
 
-  // Find best/worst per numeric row
   const hilite = (vals, higherBetter = true) => {
     const nums = vals.map(v => parseFloat(v));
     const valid = nums.filter(n => !isNaN(n));
@@ -3267,26 +3335,26 @@ function renderCmpTable(bestIdx) {
     return nums.map(n => isNaN(n) ? '' : n === best ? 'best-col' : n === worst ? 'worst-col' : '');
   };
 
-  const headers = `<thead><tr>
-    <th>Metric</th>
-    ${stocks.map((s, i) => `<th class="${i === bestIdx && stocks.length >= 2 ? 'winner-header' : ''}">${s.symbol}</th>`).join('')}
-  </tr></thead>`;
-
-  const row = (label, vals, higherBetter = true, formatter = v => v) => {
-    const cls = hilite(vals.map(v => v != null ? parseFloat(v) : NaN), higherBetter);
-    return `<tr><td>${label}</td>${vals.map((v, i) => `<td class="${cls[i]}">${v != null ? formatter(v) : '—'}</td>`).join('')}</tr>`;
+  const row = (label, vals, higherBetter, fmt) => {
+    const cls = hilite(vals.map(v => v ?? NaN), higherBetter);
+    return `<tr><td>${label}</td>${vals.map((v, i) => `<td class="${cls[i]}">${v != null ? fmt(v) : '—'}</td>`).join('')}</tr>`;
   };
 
   const upsideRow = (label, getVal) => {
     const cells = stocks.map(s => {
       const val = getVal(s);
       const u = upside(val, s.price);
-      return `<td><span class="${u.cls}">${u.str}</span>${val ? ` <span style="color:var(--muted);font-size:10px">($${parseFloat(val).toFixed(0)})</span>` : ''}</td>`;
+      return `<td><span class="${u.cls}">${u.str}</span>${val ? `<span style="color:var(--muted);font-size:10px;margin-left:4px">$${parseFloat(val).toFixed(0)}</span>` : ''}</td>`;
     });
     return `<tr><td>${label}</td>${cells.join('')}</tr>`;
   };
 
   const sectionRow = label => `<tr class="section-row"><td colspan="${stocks.length + 1}">${label}</td></tr>`;
+
+  const headers = `<thead><tr>
+    <th>Metric</th>
+    ${stocks.map((s, i) => `<th class="${i === bestIdx ? 'best-header-col' : ''}">${s.symbol}</th>`).join('')}
+  </tr></thead>`;
 
   const tbody = `<tbody>
     ${sectionRow('FUNDAMENTALS')}
@@ -3303,11 +3371,11 @@ function renderCmpTable(bestIdx) {
     ${row('Net Margin', stocks.map(s => s.netMgn), true, v => parseFloat(v).toFixed(1) + '%')}
     ${row('ROE', stocks.map(s => s.roe), true, v => parseFloat(v).toFixed(1) + '%')}
     ${row('ROIC', stocks.map(s => s.roic), true, v => parseFloat(v).toFixed(1) + '%')}
-    ${sectionRow('VALUATION MODELS (default assumptions)')}
-    ${upsideRow('DCF Fair Value', s => s.dcfVal)}
-    ${upsideRow('DDM Fair Value', s => s.ddmVal)}
-    ${upsideRow('Graham Number', s => s.grahamVal)}
-    ${upsideRow('Multiples (17x P/E)', s => s.multiplesVal)}
+    ${sectionRow('VALUATION MODELS (per-stock assumptions above)')}
+    ${upsideRow('DCF Fair Value',   s => cmpCalcModels(s).dcfVal)}
+    ${upsideRow('DDM Fair Value',   s => cmpCalcModels(s).ddmVal)}
+    ${upsideRow('Graham Number',    s => cmpCalcModels(s).grahamVal)}
+    ${upsideRow(`P/E Fair Value`,   s => cmpCalcModels(s).peVal)}
   </tbody>`;
 
   document.getElementById('cmp-table').innerHTML = headers + tbody;
@@ -3318,40 +3386,36 @@ function renderCmpChart() {
   if (!ctx) return;
   if (cmpChart) { cmpChart.destroy(); cmpChart = null; }
 
-  const stocks = cmpStocks;
-  const labels = ['Current Price', 'DCF Value', 'DDM Value', 'Graham Number', 'P/E × 17 Fair Value'];
+  const stocks = cmpStocks.filter(s => !s._loading);
   const palette = ['#00d4aa', '#4f8ef7', '#a855f7'];
 
-  const datasets = stocks.map((s, i) => ({
-    label: s.symbol,
-    data: [s.price, s.dcfVal, s.ddmVal, s.grahamVal, s.multiplesVal].map(v => v ? parseFloat(v.toFixed(2)) : null),
-    backgroundColor: palette[i] + '33',
-    borderColor: palette[i],
-    borderWidth: 2,
-    borderRadius: 6,
-  }));
+  const datasets = stocks.map((s, i) => {
+    const { dcfVal, ddmVal, grahamVal, peVal } = cmpCalcModels(s);
+    return {
+      label: s.symbol,
+      data: [s.price, dcfVal, ddmVal, grahamVal, peVal].map(v => v ? +v.toFixed(2) : null),
+      backgroundColor: palette[i] + '28',
+      borderColor: palette[i],
+      borderWidth: 2,
+      borderRadius: 5,
+    };
+  });
 
   cmpChart = new Chart(ctx, {
     type: 'bar',
-    data: { labels, datasets },
+    data: {
+      labels: ['Current Price', 'DCF Value', 'DDM Value', 'Graham Number', 'P/E Fair Value'],
+      datasets,
+    },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'top', labels: { color: '#e8e8f0', font: { family: "'Syne', sans-serif", size: 12 } } },
-        tooltip: {
-          callbacks: {
-            label: ctx => ctx.raw != null ? ` ${ctx.dataset.label}: $${ctx.raw.toFixed(2)}` : ` ${ctx.dataset.label}: N/A`,
-          }
-        }
+        legend: { position: 'top', labels: { color: '#e8e8f0', font: { family: "'Syne', sans-serif", size: 12 }, padding: 16 } },
+        tooltip: { callbacks: { label: c => c.raw != null ? ` ${c.dataset.label}: $${c.raw.toFixed(2)}` : ` ${c.dataset.label}: N/A` } },
       },
       scales: {
         x: { grid: { color: '#ffffff08' }, ticks: { color: '#6b6b8a' } },
-        y: {
-          grid: { color: '#ffffff08' },
-          ticks: { color: '#6b6b8a', callback: v => '$' + v },
-          beginAtZero: false,
-        }
+        y: { grid: { color: '#ffffff08' }, ticks: { color: '#6b6b8a', callback: v => '$' + v }, beginAtZero: false },
       }
     }
   });
