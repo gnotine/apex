@@ -3,6 +3,9 @@
   "routes": [
     { "src": "/api/finnhub(.*)", "dest": "/api/finnhub.js" },
     { "src": "/api/mortgage",    "dest": "/api/mortgage.js" },
+    { "src": "/app",             "dest": "/public/app/index.html" },
+    { "src": "/app/",            "dest": "/public/app/index.html" },
+    { "src": "/",                "dest": "/public/index.html" },
     { "src": "/(.*)",            "dest": "/public/$1" }
   ],
   "headers": [
